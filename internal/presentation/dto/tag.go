@@ -1,9 +1,8 @@
 package dto
 
-type CreateColumnDto struct {
+type CreateTagDto struct {
 	Name      string
 	Bg        string
 	Color     string
-	Order     int
 	ProjectId string
 }

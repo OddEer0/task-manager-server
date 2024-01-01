@@ -1,10 +1,9 @@
 package models
 
-type Column struct {
+type Tag struct {
 	Id        string `json:"id"`
 	Name      string `json:"name"`
-	Bg        string `json:"bg"`
 	Color     string `json:"color"`
-	Order     int    `json:"order"`
+	Bg        string `json:"bg"`
 	ProjectId string `json:"projectId"`
 }
