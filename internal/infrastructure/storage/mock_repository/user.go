@@ -2,10 +2,10 @@ package mock_repository
 
 import (
 	"context"
-	"task-manager-server/internal/domain/aggregate"
-	"task-manager-server/internal/domain/repository"
-	"task-manager-server/internal/presentation/dto"
-	"task-manager-server/internal/presentation/mock"
+	"github.com/OddEer0/task-manager-server/internal/domain/aggregate"
+	"github.com/OddEer0/task-manager-server/internal/domain/repository"
+	"github.com/OddEer0/task-manager-server/internal/presentation/dto"
+	"github.com/OddEer0/task-manager-server/internal/presentation/mock"
 )
 
 type userRepository struct {

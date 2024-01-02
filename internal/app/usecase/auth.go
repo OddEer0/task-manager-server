@@ -2,8 +2,8 @@ package usecase
 
 import (
 	"context"
-	"task-manager-server/internal/domain/models"
-	"task-manager-server/internal/presentation/dto"
+	"github.com/OddEer0/task-manager-server/internal/domain/models"
+	"github.com/OddEer0/task-manager-server/internal/presentation/dto"
 )
 
 type AuthUseCase interface {

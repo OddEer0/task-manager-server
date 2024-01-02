@@ -1,9 +1,9 @@
 package repository
 
 import (
-	"task-manager-server/internal/domain/aggregate"
-	"task-manager-server/internal/pkg/shared"
-	"task-manager-server/internal/presentation/dto"
+	"github.com/OddEer0/task-manager-server/internal/domain/aggregate"
+	"github.com/OddEer0/task-manager-server/internal/pkg/shared"
+	"github.com/OddEer0/task-manager-server/internal/presentation/dto"
 )
 
 type UserRepository interface {

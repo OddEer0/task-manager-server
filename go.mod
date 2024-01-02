@@ -1,4 +1,4 @@
-module task-manager-server
+module github.com/OddEer0/task-manager-server
 
 go 1.21.5
 
