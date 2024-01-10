@@ -2,18 +2,21 @@ package mock
 
 import (
 	"github.com/OddEer0/task-manager-server/internal/common/constants"
+	"github.com/OddEer0/task-manager-server/internal/domain/aggregate"
 	"github.com/OddEer0/task-manager-server/internal/domain/models"
+	"github.com/OddEer0/task-manager-server/internal/domain/valuesobject"
 	"github.com/OddEer0/task-manager-server/internal/presentation/dto"
 	"time"
 )
 
 type MockedUser struct {
-	Users       []*models.User
-	FullUser    *models.User
-	MinUser     *models.User
-	BannedUser  *models.User
-	AdminUser   *models.User
-	Create1User *dto.CreateUserDto
+	Users        []*models.User
+	FullUser     *models.User
+	MinUser      *models.User
+	BannedUser   *models.User
+	AdminUser    *models.User
+	Create1User  *dto.CreateUserDto
+	Created1User *aggregate.UserAggregate
 }
 
 func NewMockUser() *MockedUser {
@@ -24,13 +27,23 @@ func NewMockUser() *MockedUser {
 		BannedUser: getMockUsers()[2],
 		AdminUser:  getMockUsers()[3],
 		Create1User: &dto.CreateUserDto{
-			Name:           "Eer0",
+			Nick:           "Eer0",
 			Password:       "LeagueOfLegends5757",
 			Email:          "Lolkek@gmail.com",
 			FirstName:      "Marlen",
 			LastName:       "Karimov",
 			ActivationLink: "https://fjdskfjdlsfpdaksoad.com",
 			Role:           constants.User,
+		},
+		Created1User: &aggregate.UserAggregate{User: models.User{
+			Nick:           "Eer0",
+			Password:       "LeagueOfLegends5757",
+			Email:          valuesobject.Email{Value: "Lolkek@gmail.com"},
+			FirstName:      "Marlen",
+			LastName:       "Karimov",
+			ActivationLink: "https://fjdskfjdlsfpdaksoad.com",
+			Role:           constants.User,
+		},
 		},
 	}
 }
@@ -49,7 +62,7 @@ func getMockUsers() []*models.User {
 			Id:             "first",
 			Nick:           "Singer",
 			Password:       "dsadsagwfsadasvdasgfdasfdafda",
-			Email:          "singer@gmail.com",
+			Email:          valuesobject.Email{Value: "singer@gmail.com"},
 			FirstName:      "John",
 			LastName:       "Martin",
 			SubTitle:       nil,
@@ -67,12 +80,12 @@ func getMockUsers() []*models.User {
 			Id:             "second",
 			Nick:           "Player",
 			Password:       "gsgkll;sfogzfdlkl;fdsl;fmd;f",
-			Email:          "player@gmail.com",
+			Email:          valuesobject.Email{Value: "player@gmail.com"},
 			FirstName:      "Foggy",
 			LastName:       "Happy",
 			SubTitle:       &secondSubTitle,
 			Avatar:         &secondAvatar,
-			Birthday:       &secondBirthday,
+			Birthday:       &valuesobject.Birthday{Value: secondBirthday},
 			Role:           constants.User,
 			ActivationLink: "https://fakeapi.com",
 			IsActivate:     true,
@@ -85,12 +98,12 @@ func getMockUsers() []*models.User {
 			Id:             "third",
 			Nick:           "toxic",
 			Password:       "gsgkll;sfogzfdlkl;fdsl;fmd;f",
-			Email:          "toxic@gmail.com",
+			Email:          valuesobject.Email{Value: "toxic@gmail.com"},
 			FirstName:      "Moon",
 			LastName:       "Romantic",
 			SubTitle:       &thirdSubTitle,
 			Avatar:         &thirdAvatar,
-			Birthday:       &thirdBirthday,
+			Birthday:       &valuesobject.Birthday{Value: thirdBirthday},
 			Role:           constants.User,
 			ActivationLink: "https://fakeapi.com",
 			IsActivate:     true,
@@ -103,7 +116,7 @@ func getMockUsers() []*models.User {
 			Id:             "four",
 			Nick:           "boss",
 			Password:       "gsgkll;sfogzfdlkl;fdsl;fmd;f",
-			Email:          "boss@gmail.com",
+			Email:          valuesobject.Email{Value: "boss@gmail.com"},
 			FirstName:      "Ricardo",
 			LastName:       "Milos",
 			SubTitle:       nil,

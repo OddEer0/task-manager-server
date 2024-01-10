@@ -1,7 +1,9 @@
-package app_errors
+package appErrors
 
 import (
 	"encoding/json"
+	"errors"
+	"fmt"
 	"net/http"
 )
 
@@ -9,39 +11,93 @@ const (
 	DefaultBadRequestMessage          = "Bad request"
 	DefaultForbiddenMessage           = "Forbidden"
 	DefaultInternalServerErrorMessage = "Server error"
+	DefaultConflictMessage            = "Conflict"
+	DefaultUnauthorizedMessage        = "Unauthorized"
+	DefaultUnprocessableEntity        = "UnprocessableEntity"
 	DefaultInternalServerErrorJson    = "{\"code\": 500, \"message\": \"" + DefaultInternalServerErrorMessage + "\"}"
 )
 
-type ResponseError struct {
+type AppError struct {
 	Code    int    `json:"code"`
-	Message string `json:"message"`
+	Message string `json:"message,omitempty"`
 }
 
-func HttpError(res http.ResponseWriter, message string, code int) {
-	res.WriteHeader(code)
-	errorData := ResponseError{Code: code, Message: DefaultBadRequestMessage}
-	if err := json.NewEncoder(res).Encode(errorData); err != nil {
+func (e *AppError) Error() string {
+	return fmt.Sprintf("Code: %d, Message: %s", e.Code, e.Message)
+}
+
+func ErrorHandler(res http.ResponseWriter, err error) {
+	res.Header().Set("Content-Type", "application/json")
+
+	var statusCode int
+	var errorMessage string
+
+	var e *AppError
+	if errors.As(err, &e) {
+		statusCode = e.Code
+		errorMessage = e.Message
+	}
+
+	res.WriteHeader(statusCode)
+
+	jsonError := &AppError{
+		Code:    statusCode,
+		Message: errorMessage,
+	}
+
+	encoder := json.NewEncoder(res)
+	encoder.SetIndent("", "  ")
+	err = encoder.Encode(jsonError)
+	if err != nil {
 		http.Error(res, DefaultInternalServerErrorJson, http.StatusInternalServerError)
 	}
 }
 
-func BadRequest(res http.ResponseWriter, message string) {
+func HttpAppError(message string, code int) error {
+	return &AppError{
+		Code:    code,
+		Message: message,
+	}
+}
+
+func BadRequest(message string) error {
 	if message == "" {
 		message = DefaultBadRequestMessage
 	}
-	HttpError(res, message, http.StatusBadRequest)
+	return HttpAppError(message, http.StatusBadRequest)
 }
 
-func InternalServerError(res http.ResponseWriter, message string) {
+func InternalServerError(message string) error {
 	if message == "" {
 		message = DefaultInternalServerErrorMessage
 	}
-	HttpError(res, message, http.StatusInternalServerError)
+	return HttpAppError(message, http.StatusInternalServerError)
 }
 
-func Forbidden(res http.ResponseWriter, message string) {
+func Forbidden(message string) error {
 	if message == "" {
 		message = DefaultForbiddenMessage
 	}
-	HttpError(res, message, http.StatusForbidden)
+	return HttpAppError(message, http.StatusForbidden)
+}
+
+func Conflict(message string) error {
+	if message == "" {
+		message = DefaultConflictMessage
+	}
+	return HttpAppError(message, http.StatusConflict)
+}
+
+func Unauthorized(message string) error {
+	if message == "" {
+		message = DefaultUnauthorizedMessage
+	}
+	return HttpAppError(message, http.StatusUnauthorized)
+}
+
+func UnprocessableEntity(message string) error {
+	if message == "" {
+		message = DefaultUnauthorizedMessage
+	}
+	return HttpAppError(message, http.StatusUnprocessableEntity)
 }

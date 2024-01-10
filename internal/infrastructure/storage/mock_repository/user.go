@@ -6,6 +6,7 @@ import (
 	"github.com/OddEer0/task-manager-server/internal/domain/aggregate"
 	"github.com/OddEer0/task-manager-server/internal/domain/models"
 	"github.com/OddEer0/task-manager-server/internal/domain/repository"
+	"github.com/OddEer0/task-manager-server/internal/domain/valuesobject"
 	"github.com/OddEer0/task-manager-server/internal/presentation/dto"
 	"github.com/OddEer0/task-manager-server/internal/presentation/mock"
 	"github.com/samber/lo"
@@ -18,11 +19,11 @@ type userRepository struct {
 func (u *userRepository) Create(ctx context.Context, data dto.CreateUserDto) (*aggregate.UserAggregate, error) {
 	newUser := models.User{
 		Id:             "newUserId",
-		Nick:           data.Name,
+		Nick:           data.Nick,
 		Password:       data.Password,
 		FirstName:      data.FirstName,
 		LastName:       data.LastName,
-		Email:          data.Email,
+		Email:          valuesobject.Email{Value: data.Email},
 		ActivationLink: data.ActivationLink,
 		Role:           data.Role,
 	}
@@ -75,6 +76,24 @@ func (u *userRepository) Delete(ctx context.Context, id string) error {
 	} else {
 		return fmt.Errorf("not found")
 	}
+}
+
+func (u *userRepository) HasUserByNick(ctx context.Context, nick string) (bool, error) {
+	return lo.ContainsBy(u.mock.Users, func(item *models.User) bool {
+		if item.Nick == nick {
+			return true
+		}
+		return false
+	}), nil
+}
+
+func (u *userRepository) HasUserByEmail(ctx context.Context, email string) (bool, error) {
+	return lo.ContainsBy(u.mock.Users, func(item *models.User) bool {
+		if item.Email.Value == email {
+			return true
+		}
+		return false
+	}), nil
 }
 
 func NewUserRepository() repository.UserRepository {
