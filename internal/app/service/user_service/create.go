@@ -3,10 +3,10 @@ package userService
 import (
 	"context"
 	"fmt"
+
+	userAggregateFactory "github.com/OddEer0/task-manager-server/internal/app/factories/user_aggregate_factory"
 	"github.com/OddEer0/task-manager-server/internal/common/constants"
 	"github.com/OddEer0/task-manager-server/internal/domain/aggregate"
-	"github.com/OddEer0/task-manager-server/internal/domain/models"
-	"github.com/OddEer0/task-manager-server/internal/domain/valuesobject"
 	"github.com/OddEer0/task-manager-server/internal/presentation/dto"
 	"github.com/OddEer0/task-manager-server/pkg/app_errors"
 	"github.com/google/uuid"
@@ -28,26 +28,16 @@ func (u *userService) Create(ctx context.Context, data dto.RegistrationInputDto)
 		return nil, appErrors.Conflict(constants.UserEmailExist)
 	}
 
-	if err != nil {
-		return nil, appErrors.UnprocessableEntity("")
-	}
-	hashPassword, err := valuesobject.NewPassword(data.Password)
-	if err != nil {
-		return nil, appErrors.UnprocessableEntity("")
-	}
-	activationLink := uuid.New()
-	activationURL := fmt.Sprintf("%s/%s", constants.ActivationLinkURL, activationLink.String())
-	id := uuid.New()
-
-	userAggregate, err := aggregate.NewUserAggregate(models.User{
-		Id:             id.String(),
+	factory := userAggregateFactory.UserAggregateFactory{}
+	userAggregate, err := factory.CreateUserAggregate(userAggregateFactory.CreateUserAggregateData{
+		Id:             uuid.New().String(),
 		Nick:           data.Nick,
-		Password:       hashPassword,
-		Email:          "odd@",
+		Password:       data.Password,
+		Email:          data.Email,
 		FirstName:      data.FirstName,
 		LastName:       data.LastName,
 		Role:           constants.User,
-		ActivationLink: activationURL,
+		ActivationLink: fmt.Sprintf("%s/%s", constants.ActivationLinkURL, uuid.New().String()),
 	})
 	if err != nil {
 		return nil, appErrors.UnprocessableEntity("")

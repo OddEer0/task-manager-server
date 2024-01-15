@@ -3,13 +3,14 @@ package valuesobject
 import (
 	"encoding/json"
 	"errors"
-	"golang.org/x/crypto/bcrypt"
 	"regexp"
+
+	"golang.org/x/crypto/bcrypt"
 )
 
 const (
 	PasswordMinLength = "password min length 8"
-	PasswordMaxLength = "password min length 35"
+	PasswordMaxLength = "password max length 35"
 	PasswordInvalid   = "invalid password"
 )
 

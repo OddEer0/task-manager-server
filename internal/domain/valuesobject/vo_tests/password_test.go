@@ -2,10 +2,11 @@ package vo_tests
 
 import (
 	"errors"
+	"testing"
+
 	"github.com/OddEer0/task-manager-server/internal/domain/valuesobject"
 	"github.com/stretchr/testify/assert"
 	"golang.org/x/crypto/bcrypt"
-	"testing"
 )
 
 // TODO - сделать тесты на маршалинг json
@@ -26,7 +27,7 @@ func TestPassword(t *testing.T) {
 			error:    errors.New(valuesobject.PasswordMinLength),
 		},
 		{
-			name:     "Should error len > 30",
+			name:     "Should error len > 35",
 			password: "veryveryveryveryveryveryverylong123456789",
 			error:    errors.New(valuesobject.PasswordMaxLength),
 		},
