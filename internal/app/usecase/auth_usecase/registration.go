@@ -4,7 +4,7 @@ import (
 	"context"
 	"github.com/OddEer0/task-manager-server/internal/presentation/dto"
 	"github.com/OddEer0/task-manager-server/internal/presentation/mapper"
-	"github.com/OddEer0/task-manager-server/pkg/app_errors"
+	appErrors "github.com/OddEer0/task-manager-server/pkg/app_errors"
 )
 
 func (a *authUseCase) Registration(ctx context.Context, data dto.RegistrationInputDto) (*AuthResult, error) {
@@ -12,14 +12,21 @@ func (a *authUseCase) Registration(ctx context.Context, data dto.RegistrationInp
 	if err != nil {
 		return nil, err
 	}
+	tokens, err := a.TokenService.Generate(dto.GenerateTokenDto{Id: userAggregate.User.Id, Roles: userAggregate.User.Role})
+	if err != nil {
+		return nil, appErrors.InternalServerError("")
+	}
+	err = userAggregate.SetToken(tokens.RefreshToken)
+	if err != nil {
+		return nil, appErrors.UnprocessableEntity("")
+	}
 
-	tokens := a.TokenService.Generate(dto.GenerateTokenDto{Id: userAggregate.User.Id, Roles: userAggregate.User.Role})
-	_, err = a.TokenService.Save(ctx, dto.SaveTokenDto{Id: userAggregate.User.Id, RefreshToken: tokens.RefreshToken})
+	dbUserAggregate, err := a.UserRepository.Create(ctx, userAggregate)
 	if err != nil {
 		return nil, appErrors.InternalServerError("")
 	}
 	userMapper := mapper.NewUserAggregateMapper()
-	responseUser := userMapper.ToResponseUserDto(userAggregate)
+	responseUser := userMapper.ToResponseUserDto(dbUserAggregate)
 
-	return &AuthResult{User: &responseUser, Tokens: tokens}, nil
+	return &AuthResult{User: &responseUser, Tokens: *tokens}, nil
 }

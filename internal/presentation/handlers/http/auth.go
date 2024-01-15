@@ -2,7 +2,6 @@ package http
 
 import (
 	"github.com/OddEer0/task-manager-server/internal/presentation/dto"
-	"github.com/OddEer0/task-manager-server/internal/presentation/mock"
 	"github.com/OddEer0/task-manager-server/pkg/app_errors"
 	httpUtils "github.com/OddEer0/task-manager-server/pkg/http_utils"
 	"net/http"
@@ -30,6 +29,6 @@ func (a authHandler) Registration(res http.ResponseWriter, req *http.Request) {
 	defer func() {
 		_ = req.Body.Close()
 	}()
-	mockUser := mock.NewMockUser()
-	httpUtils.SendJson(res, http.StatusOK, mockUser.AdminUser)
+
+	httpUtils.SendJson(res, http.StatusOK, nil)
 }

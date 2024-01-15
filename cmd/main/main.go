@@ -8,7 +8,10 @@ import (
 )
 
 func main() {
-	cfg := config.MustLoad()
+	cfg, err := config.NewConfig()
+	if err != nil {
+		log.Fatalf("err: %v", err)
+	}
 	appRouter := router.AppRouter()
 	server := http.Server{Addr: cfg.Host, Handler: appRouter}
 

@@ -1,6 +1,9 @@
 package aggregate
 
-import "github.com/OddEer0/task-manager-server/internal/domain/models"
+import (
+	"github.com/OddEer0/task-manager-server/internal/domain/models"
+	"github.com/OddEer0/task-manager-server/pkg/app_validator"
+)
 
 type UserAggregate struct {
 	User     models.User
@@ -8,18 +11,24 @@ type UserAggregate struct {
 	Projects []*models.Project
 }
 
-func (u *UserAggregate) Validation() error {
-	if err := u.User.Birthday.Validate(); err != nil {
+func (u *UserAggregate) SetToken(refreshToken string) error {
+	token := models.Token{Id: u.User.Id, Value: refreshToken}
+	validator := appValidator.New()
+	err := validator.Struct(token)
+	if err != nil {
 		return err
 	}
-	if err := u.User.Email.Validate(); err != nil {
-		return err
-	}
+	u.Token = &token
 	return nil
 }
 
-func (u *UserAggregate) SetToken(token *models.Token) {
-	u.Token = token
+func (u *UserAggregate) Validation() error {
+	validator := appValidator.New()
+	err := validator.Struct(u.User)
+	if err != nil {
+		return err
+	}
+	return nil
 }
 
 func NewUserAggregate(user models.User) (*UserAggregate, error) {

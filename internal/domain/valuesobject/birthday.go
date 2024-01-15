@@ -6,9 +6,15 @@ import (
 	"time"
 )
 
+const (
+	BirthdayIsZero       = "birthday is zero"
+	BirthdayIncorrectMax = "birthday max value after 12 year"
+	BirthdayIncorrectMin = "birthday min value 1900 year"
+)
+
 var (
-	MinTime = time.Date(1900, 1, 10, 0, 0, 0, 0, time.UTC)
-	MaxTime = time.Now().AddDate(-12, 0, 0)
+	MinBirthdayTime = time.Date(1900, 1, 10, 0, 0, 0, 0, time.UTC)
+	MaxBirthdayTime = time.Now().AddDate(-12, 0, 0)
 )
 
 type Birthday struct {
@@ -17,10 +23,13 @@ type Birthday struct {
 
 func (b *Birthday) Validate() error {
 	if b.Value.IsZero() {
-		return errors.New("birthday is zero")
+		return errors.New(BirthdayIsZero)
 	}
-	if b.Value.Before(MinTime) || b.Value.After(MaxTime) {
-		return errors.New("invalid time")
+	if b.Value.Before(MinBirthdayTime) {
+		return errors.New(BirthdayIncorrectMin)
+	}
+	if b.Value.After(MaxBirthdayTime) {
+		return errors.New(BirthdayIncorrectMax)
 	}
 	return nil
 }

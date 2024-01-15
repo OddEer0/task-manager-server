@@ -2,7 +2,6 @@ package config
 
 import (
 	"github.com/joho/godotenv"
-	"log"
 	"os"
 )
 
@@ -16,14 +15,14 @@ type Config struct {
 
 var instance *Config = nil
 
-func MustLoad() *Config {
+func NewConfig() (*Config, error) {
 	if instance != nil {
-		return instance
+		return instance, nil
 	}
 
 	err := godotenv.Load("./config/.local.env")
 	if err != nil {
-		log.Fatal("Error loading .env file")
+		return nil, err
 	}
 
 	instance = &Config{
@@ -34,5 +33,15 @@ func MustLoad() *Config {
 		RefreshTokenTime: os.Getenv("REFRESH_TOKEN"),
 	}
 
-	return instance
+	return instance, nil
+}
+
+func NewConfigTest() *Config {
+	return &Config{
+		Host:             "localhost:5000",
+		StoragePath:      "./storage.db",
+		ApiKey:           "supper-secret-key",
+		AccessTokenTime:  "3m",
+		RefreshTokenTime: "3m",
+	}
 }

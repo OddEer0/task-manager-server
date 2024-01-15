@@ -6,5 +6,5 @@ import (
 )
 
 type TokenRepository interface {
-	shared.CRUDRepository[*models.Token, models.Token]
+	shared.CRUDRepository[*models.Token, *models.Token]
 }

@@ -2,7 +2,7 @@ package userService
 
 import (
 	"context"
-	"encoding/base64"
+	"fmt"
 	"github.com/OddEer0/task-manager-server/internal/common/constants"
 	"github.com/OddEer0/task-manager-server/internal/domain/aggregate"
 	"github.com/OddEer0/task-manager-server/internal/domain/models"
@@ -10,7 +10,6 @@ import (
 	"github.com/OddEer0/task-manager-server/internal/presentation/dto"
 	"github.com/OddEer0/task-manager-server/pkg/app_errors"
 	"github.com/google/uuid"
-	"golang.org/x/crypto/bcrypt"
 )
 
 func (u *userService) Create(ctx context.Context, data dto.RegistrationInputDto) (*aggregate.UserAggregate, error) {
@@ -28,29 +27,31 @@ func (u *userService) Create(ctx context.Context, data dto.RegistrationInputDto)
 	if candidate {
 		return nil, appErrors.Conflict(constants.UserEmailExist)
 	}
-	hashPassword, err := bcrypt.GenerateFromPassword([]byte(data.Password), bcrypt.DefaultCost)
+
 	if err != nil {
-		return nil, appErrors.InternalServerError("")
+		return nil, appErrors.UnprocessableEntity("")
 	}
-
+	hashPassword, err := valuesobject.NewPassword(data.Password)
+	if err != nil {
+		return nil, appErrors.UnprocessableEntity("")
+	}
 	activationLink := uuid.New()
+	activationURL := fmt.Sprintf("%s/%s", constants.ActivationLinkURL, activationLink.String())
+	id := uuid.New()
 
-	createUserAggregate, err := aggregate.NewUserAggregate(models.User{
+	userAggregate, err := aggregate.NewUserAggregate(models.User{
+		Id:             id.String(),
 		Nick:           data.Nick,
-		Password:       base64.StdEncoding.EncodeToString(hashPassword),
-		Email:          valuesobject.Email{Value: data.Email},
+		Password:       hashPassword,
+		Email:          "odd@",
 		FirstName:      data.FirstName,
 		LastName:       data.LastName,
 		Role:           constants.User,
-		ActivationLink: activationLink.String(),
+		ActivationLink: activationURL,
 	})
 	if err != nil {
 		return nil, appErrors.UnprocessableEntity("")
 	}
 
-	userAggregate, err := u.UserRepository.Create(ctx, createUserAggregate)
-	if err != nil {
-		return nil, appErrors.InternalServerError("")
-	}
 	return userAggregate, nil
 }

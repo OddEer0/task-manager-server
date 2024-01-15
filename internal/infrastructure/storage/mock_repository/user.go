@@ -6,8 +6,6 @@ import (
 	"github.com/OddEer0/task-manager-server/internal/domain/aggregate"
 	"github.com/OddEer0/task-manager-server/internal/domain/models"
 	"github.com/OddEer0/task-manager-server/internal/domain/repository"
-	"github.com/OddEer0/task-manager-server/internal/domain/valuesobject"
-	"github.com/OddEer0/task-manager-server/internal/presentation/dto"
 	"github.com/OddEer0/task-manager-server/internal/presentation/mock"
 	"github.com/samber/lo"
 )
@@ -16,16 +14,16 @@ type userRepository struct {
 	mock *mock.MockedUser
 }
 
-func (u *userRepository) Create(ctx context.Context, data dto.CreateUserDto) (*aggregate.UserAggregate, error) {
+func (u *userRepository) Create(ctx context.Context, data *aggregate.UserAggregate) (*aggregate.UserAggregate, error) {
 	newUser := models.User{
-		Id:             "newUserId",
-		Nick:           data.Nick,
-		Password:       data.Password,
-		FirstName:      data.FirstName,
-		LastName:       data.LastName,
-		Email:          valuesobject.Email{Value: data.Email},
-		ActivationLink: data.ActivationLink,
-		Role:           data.Role,
+		Id:             data.User.Id,
+		Nick:           data.User.Nick,
+		Password:       data.User.Password,
+		FirstName:      data.User.FirstName,
+		LastName:       data.User.LastName,
+		Email:          data.User.Email,
+		ActivationLink: data.User.ActivationLink,
+		Role:           data.User.Role,
 	}
 	u.mock.Users = append(u.mock.Users, &newUser)
 	return &aggregate.UserAggregate{User: newUser}, nil

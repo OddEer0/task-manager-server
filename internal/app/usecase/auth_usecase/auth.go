@@ -28,6 +28,6 @@ type (
 	}
 )
 
-func NewAuthUseCase(userService userService.Service, tokenService tokenService.Service) AuthUseCase {
-	return &authUseCase{UserService: userService, TokenService: tokenService}
+func NewAuthUseCase(userService userService.Service, tokenService tokenService.Service, userRepo repository.UserRepository) AuthUseCase {
+	return &authUseCase{UserService: userService, TokenService: tokenService, UserRepository: userRepo}
 }

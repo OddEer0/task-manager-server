@@ -20,7 +20,7 @@ type (
 	}
 
 	Service interface {
-		Generate(data dto.GenerateTokenDto) JwtTokens
+		Generate(data dto.GenerateTokenDto) (*JwtTokens, error)
 		Save(ctx context.Context, data dto.SaveTokenDto) (*models.Token, error)
 		Delete(ctx context.Context, id string) error
 	}
