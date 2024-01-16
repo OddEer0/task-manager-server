@@ -1,8 +1,11 @@
 package config
 
 import (
-	"github.com/joho/godotenv"
+	"fmt"
 	"os"
+	"path/filepath"
+
+	"github.com/joho/godotenv"
 )
 
 type Config struct {
@@ -19,8 +22,21 @@ func NewConfig() (*Config, error) {
 	if instance != nil {
 		return instance, nil
 	}
+	dir := os.Getenv("ABS_PATH")
 
-	err := godotenv.Load("./config/.local.env")
+	env := os.Getenv("ENV")
+	var cfgFilePath string
+
+	switch env {
+	case "":
+		cfgFilePath = filepath.Join(dir, "./config/.local.env")
+	case "test":
+		cfgFilePath = filepath.Join(dir, "./config/.test.env")
+	}
+
+	fmt.Print("cfg file path: ", cfgFilePath, "\n")
+
+	err := godotenv.Load(cfgFilePath)
 	if err != nil {
 		return nil, err
 	}
@@ -34,14 +50,4 @@ func NewConfig() (*Config, error) {
 	}
 
 	return instance, nil
-}
-
-func NewConfigTest() *Config {
-	return &Config{
-		Host:             "localhost:5000",
-		StoragePath:      "./storage.db",
-		ApiKey:           "supper-secret-key",
-		AccessTokenTime:  "3m",
-		RefreshTokenTime: "3m",
-	}
 }

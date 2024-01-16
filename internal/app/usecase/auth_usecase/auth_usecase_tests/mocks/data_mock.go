@@ -22,7 +22,7 @@ func NewAuthUseCaseDataMock() *AuthUseCaseDataMock {
 	return &AuthUseCaseDataMock{
 		Registration: &AuthUseCaseRegistrationDataMock{
 			CorrectRegInput1: dto.RegistrationInputDto{
-				Nick:      "err0",
+				Nick:      "NewEer0",
 				Email:     "eer0@gmail.com",
 				Password:  "Supperpupper123",
 				FirstName: "Marlen",
@@ -31,7 +31,7 @@ func NewAuthUseCaseDataMock() *AuthUseCaseDataMock {
 			CorrectRegInput1Result1: authUsecase.AuthResult{
 				User: &dto.ResponseUserDto{
 					Id:        uuid.New().String(),
-					Nick:      "Eer0",
+					Nick:      "NewEer0",
 					Email:     "Lolkek@gmail.com",
 					FirstName: "Marlen",
 					LastName:  "Karimov",
