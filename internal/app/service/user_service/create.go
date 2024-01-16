@@ -3,6 +3,7 @@ package userService
 import (
 	"context"
 	"fmt"
+	"time"
 
 	userAggregateFactory "github.com/OddEer0/task-manager-server/internal/app/factories/user_aggregate_factory"
 	"github.com/OddEer0/task-manager-server/internal/common/constants"
@@ -38,6 +39,8 @@ func (u *userService) Create(ctx context.Context, data dto.RegistrationInputDto)
 		LastName:       data.LastName,
 		Role:           constants.User,
 		ActivationLink: fmt.Sprintf("%s/%s", constants.ActivationLinkURL, uuid.New().String()),
+		CreatedAt:      time.Now(),
+		UpdatedAt:      time.Now(),
 	})
 	if err != nil {
 		return nil, appErrors.UnprocessableEntity("")

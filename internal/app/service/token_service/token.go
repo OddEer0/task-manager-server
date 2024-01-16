@@ -2,6 +2,7 @@ package tokenService
 
 import (
 	"context"
+
 	"github.com/OddEer0/task-manager-server/internal/domain/models"
 	"github.com/OddEer0/task-manager-server/internal/domain/repository"
 	"github.com/OddEer0/task-manager-server/internal/presentation/dto"
@@ -30,7 +31,7 @@ type (
 	}
 )
 
-func NewTokenService(tokenRepo repository.TokenRepository) Service {
+func New(tokenRepo repository.TokenRepository) Service {
 	return &tokenService{
 		TokenRepository: tokenRepo,
 	}

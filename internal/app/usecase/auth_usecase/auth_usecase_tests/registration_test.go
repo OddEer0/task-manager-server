@@ -1,15 +1,15 @@
-package tests
+package auth_usecase_tests
 
 import (
 	"context"
-	"fmt"
-	tokenService "github.com/OddEer0/task-manager-server/internal/app/service/token_service"
-	userService "github.com/OddEer0/task-manager-server/internal/app/service/user_service"
-	"github.com/OddEer0/task-manager-server/internal/app/usecase/auth_usecase"
-	"github.com/OddEer0/task-manager-server/internal/app/usecase/auth_usecase/tests/mocks"
-	"github.com/OddEer0/task-manager-server/internal/infrastructure/storage/mock_repository"
-	"github.com/OddEer0/task-manager-server/internal/presentation/dto"
 	"testing"
+
+	"github.com/OddEer0/task-manager-server/internal/app/usecase/auth_usecase"
+	"github.com/OddEer0/task-manager-server/internal/app/usecase/auth_usecase/auth_usecase_tests/mocks"
+	"github.com/OddEer0/task-manager-server/internal/presentation/dto"
+	"github.com/OddEer0/task-manager-server/internal/tests"
+	"github.com/google/uuid"
+	"github.com/stretchr/testify/assert"
 )
 
 func TestAuthUseCaseRegistration(t *testing.T) {
@@ -30,11 +30,8 @@ func TestAuthUseCaseRegistration(t *testing.T) {
 			isError:        false,
 		},
 	}
-	userRepo := mock_repository.NewUserRepository()
-	tokenRepo := mock_repository.NewTokenRepository()
-	userServ := userService.NewUserService(userRepo)
-	tokenServ := tokenService.NewTokenService(tokenRepo)
-	authUseCase := authUsecase.NewAuthUseCase(userServ, tokenServ, userRepo)
+
+	authUseCase := tests.NewUseCases().AuthUseCase
 
 	//isEqualUser := func(a *dto.ResponseUserDto, b *dto.ResponseUserDto) bool {
 	//	aType := reflect.TypeOf(*a)
@@ -57,12 +54,10 @@ func TestAuthUseCaseRegistration(t *testing.T) {
 	for _, testCase := range testCases {
 		t.Run(testCase.name, func(t *testing.T) {
 			result, err := authUseCase.Registration(context.Background(), testCase.inputData)
-			fmt.Printf("%v %v", result, err)
-
-			//assert.Equal(t, err, testCase.expectedError)
-			//assert.NotEmpty(t, result.Tokens.RefreshToken)
-			//assert.NotEmpty(t, result.Tokens.AccessToken)
-			//assert.Nil(t, uuid.Validate(result.User.Id))
+			assert.Equal(t, err, testCase.expectedError)
+			assert.NotEmpty(t, result.Tokens.RefreshToken)
+			assert.NotEmpty(t, result.Tokens.AccessToken)
+			assert.Nil(t, uuid.Validate(result.User.Id))
 			//assert.True(t, isEqualUser(testCase.expectedResult.User, result.User))
 		})
 	}

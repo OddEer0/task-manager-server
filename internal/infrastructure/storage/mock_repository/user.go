@@ -2,7 +2,9 @@ package mock_repository
 
 import (
 	"context"
+	"errors"
 	"fmt"
+
 	"github.com/OddEer0/task-manager-server/internal/domain/aggregate"
 	"github.com/OddEer0/task-manager-server/internal/domain/models"
 	"github.com/OddEer0/task-manager-server/internal/domain/repository"
@@ -15,18 +17,17 @@ type userRepository struct {
 }
 
 func (u *userRepository) Create(ctx context.Context, data *aggregate.UserAggregate) (*aggregate.UserAggregate, error) {
-	newUser := models.User{
-		Id:             data.User.Id,
-		Nick:           data.User.Nick,
-		Password:       data.User.Password,
-		FirstName:      data.User.FirstName,
-		LastName:       data.User.LastName,
-		Email:          data.User.Email,
-		ActivationLink: data.User.ActivationLink,
-		Role:           data.User.Role,
+	has := lo.ContainsBy(u.mock.Users, func(item *models.User) bool {
+		if item.Nick == data.User.Nick || item.Email == data.User.Email {
+			return true
+		}
+		return false
+	})
+	if has {
+		return nil, errors.New("conflict fields")
 	}
-	u.mock.Users = append(u.mock.Users, &newUser)
-	return &aggregate.UserAggregate{User: newUser}, nil
+	u.mock.Users = append(u.mock.Users, &data.User)
+	return data, nil
 }
 
 func (u *userRepository) GetById(ctx context.Context, id string) (*aggregate.UserAggregate, error) {
@@ -87,7 +88,7 @@ func (u *userRepository) HasUserByNick(ctx context.Context, nick string) (bool, 
 
 func (u *userRepository) HasUserByEmail(ctx context.Context, email string) (bool, error) {
 	return lo.ContainsBy(u.mock.Users, func(item *models.User) bool {
-		if item.Email.Value == email {
+		if item.Email == email {
 			return true
 		}
 		return false

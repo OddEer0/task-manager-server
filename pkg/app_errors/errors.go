@@ -97,7 +97,7 @@ func Unauthorized(message string) error {
 
 func UnprocessableEntity(message string) error {
 	if message == "" {
-		message = DefaultUnauthorizedMessage
+		message = DefaultUnprocessableEntity
 	}
 	return HttpAppError(message, http.StatusUnprocessableEntity)
 }

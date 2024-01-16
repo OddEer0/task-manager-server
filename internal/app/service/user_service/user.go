@@ -2,6 +2,7 @@ package userService
 
 import (
 	"context"
+
 	"github.com/OddEer0/task-manager-server/internal/domain/aggregate"
 	"github.com/OddEer0/task-manager-server/internal/domain/repository"
 	"github.com/OddEer0/task-manager-server/internal/presentation/dto"
@@ -17,6 +18,6 @@ type (
 	}
 )
 
-func NewUserService(userRepo repository.UserRepository) Service {
+func New(userRepo repository.UserRepository) Service {
 	return &userService{UserRepository: userRepo}
 }
