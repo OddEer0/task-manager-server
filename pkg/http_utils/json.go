@@ -3,9 +3,10 @@ package httpUtils
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/go-playground/validator/v10"
 	"io"
 	"net/http"
+
+	appValidator "github.com/OddEer0/task-manager-server/pkg/app_validator"
 )
 
 const (
@@ -24,7 +25,7 @@ func BodyJson(req *http.Request, body interface{}) error {
 		return fmt.Errorf(UnmarshalError, err)
 	}
 
-	validate := validator.New()
+	validate := appValidator.New()
 	if err = validate.Struct(body); err != nil {
 		return fmt.Errorf(ValidateRequestBodyError, err)
 	}

@@ -2,10 +2,11 @@ package tokenService
 
 import (
 	"context"
+
+	appDto "github.com/OddEer0/task-manager-server/internal/app/app_dto"
 	"github.com/OddEer0/task-manager-server/internal/domain/models"
-	"github.com/OddEer0/task-manager-server/internal/presentation/dto"
 )
 
-func (t *tokenService) Save(ctx context.Context, data dto.SaveTokenDto) (*models.Token, error) {
+func (t *tokenService) Save(ctx context.Context, data appDto.SaveTokenServiceDto) (*models.Token, error) {
 	return nil, nil
 }

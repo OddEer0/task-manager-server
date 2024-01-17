@@ -5,15 +5,15 @@ import (
 	"fmt"
 	"time"
 
+	appDto "github.com/OddEer0/task-manager-server/internal/app/app_dto"
 	userAggregateFactory "github.com/OddEer0/task-manager-server/internal/app/factories/user_aggregate_factory"
 	"github.com/OddEer0/task-manager-server/internal/common/constants"
 	"github.com/OddEer0/task-manager-server/internal/domain/aggregate"
-	"github.com/OddEer0/task-manager-server/internal/presentation/dto"
 	"github.com/OddEer0/task-manager-server/pkg/app_errors"
 	"github.com/google/uuid"
 )
 
-func (u *userService) Create(ctx context.Context, data dto.RegistrationInputDto) (*aggregate.UserAggregate, error) {
+func (u *userService) Create(ctx context.Context, data appDto.RegistrationUseCaseDto) (*aggregate.UserAggregate, error) {
 	candidate, err := u.UserRepository.HasUserByNick(ctx, data.Nick)
 	if err != nil {
 		return nil, appErrors.InternalServerError("")

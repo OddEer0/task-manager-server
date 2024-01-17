@@ -1,7 +1,6 @@
 package config
 
 import (
-	"fmt"
 	"os"
 	"path/filepath"
 
@@ -33,8 +32,6 @@ func NewConfig() (*Config, error) {
 	case "test":
 		cfgFilePath = filepath.Join(dir, "./config/.test.env")
 	}
-
-	fmt.Print("cfg file path: ", cfgFilePath, "\n")
 
 	err := godotenv.Load(cfgFilePath)
 	if err != nil {

@@ -6,11 +6,11 @@ import (
 	"net/http"
 	"testing"
 
+	appDto "github.com/OddEer0/task-manager-server/internal/app/app_dto"
 	"github.com/OddEer0/task-manager-server/internal/app/service/user_service"
 	"github.com/OddEer0/task-manager-server/internal/common/constants"
 	"github.com/OddEer0/task-manager-server/internal/domain/aggregate"
 	"github.com/OddEer0/task-manager-server/internal/infrastructure/storage/mock_repository"
-	"github.com/OddEer0/task-manager-server/internal/presentation/dto"
 	"github.com/OddEer0/task-manager-server/internal/presentation/mock"
 	"github.com/OddEer0/task-manager-server/pkg/app_errors"
 	"github.com/stretchr/testify/assert"
@@ -20,13 +20,13 @@ func TestUserServiceCreate(t *testing.T) {
 	memMockUser := mock.NewMockUser()
 	testCases := []struct {
 		name    string
-		newUser dto.RegistrationInputDto
+		newUser appDto.RegistrationUseCaseDto
 		isError bool
 		errCode int
 	}{
 		{
 			name: "Should create user aggregate",
-			newUser: dto.RegistrationInputDto{
+			newUser: appDto.RegistrationUseCaseDto{
 				Nick:      "new_user",
 				Password:  "CorrectPassword123",
 				Email:     "newuser@gmail.com",
@@ -37,7 +37,7 @@ func TestUserServiceCreate(t *testing.T) {
 		},
 		{
 			name: "Should conflict error by nick user",
-			newUser: dto.RegistrationInputDto{
+			newUser: appDto.RegistrationUseCaseDto{
 				Nick:      memMockUser.FullUser.Nick,
 				Password:  "CorrectPassword123",
 				Email:     "correct@gmail.com",
@@ -49,7 +49,7 @@ func TestUserServiceCreate(t *testing.T) {
 		},
 		{
 			name: "Should conflict error by email user",
-			newUser: dto.RegistrationInputDto{
+			newUser: appDto.RegistrationUseCaseDto{
 				Nick:      "new_user_2",
 				Password:  "CorrectPassword123",
 				Email:     memMockUser.FullUser.Email,

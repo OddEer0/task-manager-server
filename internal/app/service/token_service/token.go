@@ -3,9 +3,9 @@ package tokenService
 import (
 	"context"
 
+	appDto "github.com/OddEer0/task-manager-server/internal/app/app_dto"
 	"github.com/OddEer0/task-manager-server/internal/domain/models"
 	"github.com/OddEer0/task-manager-server/internal/domain/repository"
-	"github.com/OddEer0/task-manager-server/internal/presentation/dto"
 	"github.com/dgrijalva/jwt-go"
 )
 
@@ -16,13 +16,13 @@ type (
 	}
 
 	CustomClaims struct {
-		JwtUserData dto.GenerateTokenDto
+		JwtUserData appDto.GenerateTokenServiceDto
 		jwt.StandardClaims
 	}
 
 	Service interface {
-		Generate(data dto.GenerateTokenDto) (*JwtTokens, error)
-		Save(ctx context.Context, data dto.SaveTokenDto) (*models.Token, error)
+		Generate(data appDto.GenerateTokenServiceDto) (*JwtTokens, error)
+		Save(ctx context.Context, data appDto.SaveTokenServiceDto) (*models.Token, error)
 		Delete(ctx context.Context, id string) error
 	}
 

@@ -3,14 +3,14 @@ package userService
 import (
 	"context"
 
+	appDto "github.com/OddEer0/task-manager-server/internal/app/app_dto"
 	"github.com/OddEer0/task-manager-server/internal/domain/aggregate"
 	"github.com/OddEer0/task-manager-server/internal/domain/repository"
-	"github.com/OddEer0/task-manager-server/internal/presentation/dto"
 )
 
 type (
 	Service interface {
-		Create(ctx context.Context, data dto.RegistrationInputDto) (*aggregate.UserAggregate, error)
+		Create(ctx context.Context, data appDto.RegistrationUseCaseDto) (*aggregate.UserAggregate, error)
 	}
 
 	userService struct {

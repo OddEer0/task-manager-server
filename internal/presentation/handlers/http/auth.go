@@ -1,10 +1,12 @@
 package http
 
 import (
-	"github.com/OddEer0/task-manager-server/internal/presentation/dto"
+	"net/http"
+
+	appDto "github.com/OddEer0/task-manager-server/internal/app/app_dto"
+	authUsecase "github.com/OddEer0/task-manager-server/internal/app/usecase/auth_usecase"
 	"github.com/OddEer0/task-manager-server/pkg/app_errors"
 	httpUtils "github.com/OddEer0/task-manager-server/pkg/http_utils"
-	"net/http"
 )
 
 type AuthHandler interface {
@@ -12,16 +14,18 @@ type AuthHandler interface {
 }
 
 type authHandler struct {
+	authUsecase.AuthUseCase
 }
 
-func NewAuthHandler() AuthHandler {
-	return authHandler{}
+func NewAuthHandler(authUseCase authUsecase.AuthUseCase) AuthHandler {
+	return authHandler{
+		AuthUseCase: authUseCase,
+	}
 }
 
 func (a authHandler) Registration(res http.ResponseWriter, req *http.Request) {
-	var body dto.RegistrationInputDto
+	var body appDto.RegistrationUseCaseDto
 	err := httpUtils.BodyJson(req, &body)
-
 	if err != nil {
 		appErrors.ErrorHandler(res, appErrors.BadRequest(""))
 		return
@@ -30,5 +34,11 @@ func (a authHandler) Registration(res http.ResponseWriter, req *http.Request) {
 		_ = req.Body.Close()
 	}()
 
-	httpUtils.SendJson(res, http.StatusOK, nil)
+	registerResult, err := a.AuthUseCase.Registration(req.Context(), body)
+	if err != nil {
+		appErrors.ErrorHandler(res, err)
+		return
+	}
+
+	httpUtils.SendJson(res, http.StatusOK, registerResult.User)
 }

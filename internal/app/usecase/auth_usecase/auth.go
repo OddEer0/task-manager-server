@@ -3,21 +3,21 @@ package authUsecase
 import (
 	"context"
 
+	appDto "github.com/OddEer0/task-manager-server/internal/app/app_dto"
 	"github.com/OddEer0/task-manager-server/internal/app/service/token_service"
 	"github.com/OddEer0/task-manager-server/internal/app/service/user_service"
 	"github.com/OddEer0/task-manager-server/internal/domain/repository"
-	"github.com/OddEer0/task-manager-server/internal/presentation/dto"
 )
 
 type (
 	AuthResult struct {
-		User   *dto.ResponseUserDto
+		User   *appDto.ResponseUserDto
 		Tokens tokenService.JwtTokens
 	}
 
 	AuthUseCase interface {
-		Registration(ctx context.Context, data dto.RegistrationInputDto) (*AuthResult, error)
-		Login(ctx context.Context, data dto.LoginInputDto) (*AuthResult, error)
+		Registration(ctx context.Context, data appDto.RegistrationUseCaseDto) (*AuthResult, error)
+		Login(ctx context.Context, data appDto.LoginUseCaseDto) (*AuthResult, error)
 		Logout(ctx context.Context, refreshToken string) error
 		Refresh(ctx context.Context, refreshToken string) (*AuthResult, error)
 	}

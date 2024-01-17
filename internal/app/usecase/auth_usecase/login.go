@@ -2,9 +2,10 @@ package authUsecase
 
 import (
 	"context"
-	"github.com/OddEer0/task-manager-server/internal/presentation/dto"
+
+	appDto "github.com/OddEer0/task-manager-server/internal/app/app_dto"
 )
 
-func (a *authUseCase) Login(ctx context.Context, data dto.LoginInputDto) (*AuthResult, error) {
+func (a *authUseCase) Login(ctx context.Context, data appDto.LoginUseCaseDto) (*AuthResult, error) {
 	return nil, nil
 }

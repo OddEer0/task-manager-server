@@ -1,14 +1,15 @@
 package tokenService
 
 import (
+	"time"
+
 	"github.com/OddEer0/task-manager-server/config"
-	"github.com/OddEer0/task-manager-server/internal/presentation/dto"
+	appDto "github.com/OddEer0/task-manager-server/internal/app/app_dto"
 	appErrors "github.com/OddEer0/task-manager-server/pkg/app_errors"
 	"github.com/dgrijalva/jwt-go"
-	"time"
 )
 
-func (t *tokenService) Generate(data dto.GenerateTokenDto) (*JwtTokens, error) {
+func (t *tokenService) Generate(data appDto.GenerateTokenServiceDto) (*JwtTokens, error) {
 	cfg, err := config.NewConfig()
 	if err != nil {
 		return nil, appErrors.InternalServerError("")
@@ -25,8 +26,16 @@ func (t *tokenService) Generate(data dto.GenerateTokenDto) (*JwtTokens, error) {
 	}
 	accessToken := jwt.NewWithClaims(jwt.SigningMethodHS256, accessClaims)
 	refreshToken := jwt.NewWithClaims(jwt.SigningMethodHS256, refreshClaims)
+	accessTokenString, err := accessToken.SignedString([]byte(cfg.ApiKey))
+	if err != nil {
+		return nil, appErrors.InternalServerError("")
+	}
+	refreshTokenString, err := refreshToken.SignedString([]byte(cfg.ApiKey))
+	if err != nil {
+		return nil, appErrors.InternalServerError("")
+	}
 	return &JwtTokens{
-		AccessToken:  accessToken.Signature,
-		RefreshToken: refreshToken.Signature,
+		AccessToken:  accessTokenString,
+		RefreshToken: refreshTokenString,
 	}, nil
 }
