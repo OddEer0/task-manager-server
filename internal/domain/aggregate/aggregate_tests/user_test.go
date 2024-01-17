@@ -6,9 +6,9 @@ import (
 	"testing"
 	"time"
 
+	appDto "github.com/OddEer0/task-manager-server/internal/app/app_dto"
 	"github.com/OddEer0/task-manager-server/internal/domain/aggregate"
 	"github.com/OddEer0/task-manager-server/internal/domain/models"
-	"github.com/OddEer0/task-manager-server/internal/presentation/dto"
 	"github.com/OddEer0/task-manager-server/internal/presentation/mock"
 	"github.com/dgrijalva/jwt-go"
 	"github.com/go-playground/validator/v10"
@@ -16,7 +16,7 @@ import (
 )
 
 type CustomClaims struct {
-	JwtUserData dto.GenerateTokenDto
+	JwtUserData appDto.GenerateTokenServiceDto
 	jwt.StandardClaims
 }
 
@@ -118,7 +118,7 @@ func TestUserAggregateSetToken(t *testing.T) {
 	memMockUser := mock.NewMockUser()
 	accessDuration, _ := time.ParseDuration("15m")
 	accessClaims := CustomClaims{
-		JwtUserData:    dto.GenerateTokenDto{Id: memMockUser.User.Id, Roles: memMockUser.User.Role},
+		JwtUserData:    appDto.GenerateTokenServiceDto{Id: memMockUser.User.Id, Role: memMockUser.User.Role},
 		StandardClaims: jwt.StandardClaims{ExpiresAt: time.Now().Add(accessDuration).Unix()},
 	}
 	accessToken := jwt.NewWithClaims(jwt.SigningMethodHS256, accessClaims)
