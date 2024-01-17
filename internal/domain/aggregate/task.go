@@ -1,6 +1,6 @@
 package aggregate
 
-import "task-manager-server/internal/domain/models"
+import "github.com/OddEer0/task-manager-server/internal/domain/models"
 
 type TaskAggregate struct {
 	Task   models.Task

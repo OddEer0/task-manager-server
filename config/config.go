@@ -1,9 +1,10 @@
 package config
 
 import (
-	"github.com/joho/godotenv"
-	"log"
 	"os"
+	"path/filepath"
+
+	"github.com/joho/godotenv"
 )
 
 type Config struct {
@@ -16,14 +17,25 @@ type Config struct {
 
 var instance *Config = nil
 
-func MustLoad() *Config {
+func NewConfig() (*Config, error) {
 	if instance != nil {
-		return instance
+		return instance, nil
+	}
+	dir := os.Getenv("ABS_PATH")
+
+	env := os.Getenv("ENV")
+	var cfgFilePath string
+
+	switch env {
+	case "":
+		cfgFilePath = filepath.Join(dir, "./config/.local.env")
+	case "test":
+		cfgFilePath = filepath.Join(dir, "./config/.test.env")
 	}
 
-	err := godotenv.Load("./config/.local.env")
+	err := godotenv.Load(cfgFilePath)
 	if err != nil {
-		log.Fatal("Error loading .env file")
+		return nil, err
 	}
 
 	instance = &Config{
@@ -34,5 +46,5 @@ func MustLoad() *Config {
 		RefreshTokenTime: os.Getenv("REFRESH_TOKEN"),
 	}
 
-	return instance
+	return instance, nil
 }
