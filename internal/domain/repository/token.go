@@ -1,10 +1,10 @@
 package repository
 
 import (
-	"task-manager-server/internal/domain/models"
-	"task-manager-server/internal/pkg/shared"
+	"github.com/OddEer0/task-manager-server/internal/domain/models"
+	"github.com/OddEer0/task-manager-server/pkg/shared"
 )
 
 type TokenRepository interface {
-	shared.CRUDRepository[*models.Token, models.Token]
+	shared.CRUDRepository[*models.Token, *models.Token]
 }
