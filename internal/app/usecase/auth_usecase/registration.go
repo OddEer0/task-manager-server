@@ -15,16 +15,16 @@ func (a *authUseCase) Registration(ctx context.Context, data appDto.Registration
 	}
 	tokens, err := a.TokenService.Generate(appDto.GenerateTokenServiceDto{Id: userAggregate.User.Id, Role: userAggregate.User.Role})
 	if err != nil {
-		return nil, appErrors.InternalServerError("")
+		return nil, err
 	}
 	err = userAggregate.SetToken(tokens.RefreshToken)
 	if err != nil {
-		return nil, appErrors.UnprocessableEntity("")
+		return nil, appErrors.UnprocessableEntity("", "target: AuthUseCase, method: Registration. ", "Aggregate SetToken method error: ", err.Error())
 	}
 
 	dbUserAggregate, err := a.UserRepository.Create(ctx, userAggregate)
 	if err != nil {
-		return nil, appErrors.InternalServerError("")
+		return nil, appErrors.InternalServerError("", "target: AuthUseCase, method: Registration. ", "UserRepository create user error: ", err.Error())
 	}
 	userMapper := mapper.NewUserAggregateMapper()
 	responseUser := userMapper.ToResponseUserDto(dbUserAggregate)

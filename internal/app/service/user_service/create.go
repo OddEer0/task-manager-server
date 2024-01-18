@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"time"
 
-	appDto "github.com/OddEer0/task-manager-server/internal/app/app_dto"
-	userAggregateFactory "github.com/OddEer0/task-manager-server/internal/app/factories/user_aggregate_factory"
+	"github.com/OddEer0/task-manager-server/internal/app/app_dto"
+	"github.com/OddEer0/task-manager-server/internal/app/factories/user_aggregate_factory"
 	"github.com/OddEer0/task-manager-server/internal/common/constants"
 	"github.com/OddEer0/task-manager-server/internal/domain/aggregate"
 	"github.com/OddEer0/task-manager-server/pkg/app_errors"
@@ -16,17 +16,17 @@ import (
 func (u *userService) Create(ctx context.Context, data appDto.RegistrationUseCaseDto) (*aggregate.UserAggregate, error) {
 	candidate, err := u.UserRepository.HasUserByNick(ctx, data.Nick)
 	if err != nil {
-		return nil, appErrors.InternalServerError("")
+		return nil, appErrors.InternalServerError("", "target: UserService, method: Create. ", "user repository error: ", err.Error())
 	}
 	if candidate {
-		return nil, appErrors.Conflict(constants.UserNickExist)
+		return nil, appErrors.Conflict(constants.UserNickExist, "target: UserService, method: Create. ", "Nick conflict")
 	}
 	candidate, err = u.UserRepository.HasUserByEmail(ctx, data.Email)
 	if err != nil {
-		return nil, appErrors.InternalServerError("")
+		return nil, appErrors.InternalServerError("", "target: UserService, method: Create. ", "user repository error: ", err.Error())
 	}
 	if candidate {
-		return nil, appErrors.Conflict(constants.UserEmailExist)
+		return nil, appErrors.Conflict(constants.UserEmailExist, "target: UserService, method: Create. ", "Email conflict")
 	}
 
 	factory := userAggregateFactory.UserAggregateFactory{}
@@ -43,7 +43,7 @@ func (u *userService) Create(ctx context.Context, data appDto.RegistrationUseCas
 		UpdatedAt:      time.Now(),
 	})
 	if err != nil {
-		return nil, appErrors.UnprocessableEntity("")
+		return nil, appErrors.UnprocessableEntity("", "target: UserService, method: Create. ", "Factory create user aggregate error: ", err.Error())
 	}
 
 	return userAggregate, nil

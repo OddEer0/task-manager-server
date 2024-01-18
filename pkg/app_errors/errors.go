@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"strings"
 )
 
 const (
@@ -17,10 +18,13 @@ const (
 	DefaultInternalServerErrorJson    = "{\"code\": 500, \"message\": \"" + DefaultInternalServerErrorMessage + "\"}"
 )
 
-type AppError struct {
-	Code    int    `json:"code"`
-	Message string `json:"message,omitempty"`
-}
+type (
+	AppError struct {
+		Code       int    `json:"code"`
+		Message    string `json:"message,omitempty"`
+		DevMessage string `json:"-"`
+	}
+)
 
 func (e *AppError) Error() string {
 	return fmt.Sprintf("Code: %d, Message: %s", e.Code, e.Message)
@@ -53,51 +57,52 @@ func ErrorHandler(res http.ResponseWriter, err error) {
 	}
 }
 
-func HttpAppError(message string, code int) error {
+func HttpAppError(message string, code int, devMessages ...string) error {
 	return &AppError{
-		Code:    code,
-		Message: message,
+		Code:       code,
+		Message:    message,
+		DevMessage: strings.Join(devMessages, ""),
 	}
 }
 
-func BadRequest(message string) error {
+func BadRequest(message string, devMessages ...string) error {
 	if message == "" {
 		message = DefaultBadRequestMessage
 	}
-	return HttpAppError(message, http.StatusBadRequest)
+	return HttpAppError(message, http.StatusBadRequest, devMessages...)
 }
 
-func InternalServerError(message string) error {
+func InternalServerError(message string, devMessages ...string) error {
 	if message == "" {
 		message = DefaultInternalServerErrorMessage
 	}
-	return HttpAppError(message, http.StatusInternalServerError)
+	return HttpAppError(message, http.StatusInternalServerError, devMessages...)
 }
 
-func Forbidden(message string) error {
+func Forbidden(message string, devMessages ...string) error {
 	if message == "" {
 		message = DefaultForbiddenMessage
 	}
-	return HttpAppError(message, http.StatusForbidden)
+	return HttpAppError(message, http.StatusForbidden, devMessages...)
 }
 
-func Conflict(message string) error {
+func Conflict(message string, devMessages ...string) error {
 	if message == "" {
 		message = DefaultConflictMessage
 	}
-	return HttpAppError(message, http.StatusConflict)
+	return HttpAppError(message, http.StatusConflict, devMessages...)
 }
 
-func Unauthorized(message string) error {
+func Unauthorized(message string, devMessages ...string) error {
 	if message == "" {
 		message = DefaultUnauthorizedMessage
 	}
-	return HttpAppError(message, http.StatusUnauthorized)
+	return HttpAppError(message, http.StatusUnauthorized, devMessages...)
 }
 
-func UnprocessableEntity(message string) error {
+func UnprocessableEntity(message string, devMessages ...string) error {
 	if message == "" {
 		message = DefaultUnprocessableEntity
 	}
-	return HttpAppError(message, http.StatusUnprocessableEntity)
+	return HttpAppError(message, http.StatusUnprocessableEntity, devMessages...)
 }
