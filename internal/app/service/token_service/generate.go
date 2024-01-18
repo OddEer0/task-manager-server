@@ -12,7 +12,7 @@ import (
 func (t *tokenService) Generate(data appDto.GenerateTokenServiceDto) (*JwtTokens, error) {
 	cfg, err := config.NewConfig()
 	if err != nil {
-		return nil, appErrors.InternalServerError("")
+		return nil, appErrors.InternalServerError("", "target: TokenService, method: Generate. ", "Load config error, config error: ", err.Error())
 	}
 	accessDuration, _ := time.ParseDuration(cfg.AccessTokenTime)
 	refreshDuration, _ := time.ParseDuration(cfg.RefreshTokenTime)
@@ -28,11 +28,11 @@ func (t *tokenService) Generate(data appDto.GenerateTokenServiceDto) (*JwtTokens
 	refreshToken := jwt.NewWithClaims(jwt.SigningMethodHS256, refreshClaims)
 	accessTokenString, err := accessToken.SignedString([]byte(cfg.ApiKey))
 	if err != nil {
-		return nil, appErrors.InternalServerError("")
+		return nil, appErrors.InternalServerError("", "target: TokenService, method: Generate. ", "Sign access token error: ", err.Error())
 	}
 	refreshTokenString, err := refreshToken.SignedString([]byte(cfg.ApiKey))
 	if err != nil {
-		return nil, appErrors.InternalServerError("")
+		return nil, appErrors.InternalServerError("", "target: TokenService, method: Generate. ", "Sign refresh token error: ", err.Error())
 	}
 	return &JwtTokens{
 		AccessToken:  accessTokenString,
