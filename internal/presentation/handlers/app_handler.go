@@ -19,5 +19,6 @@ func NewAppHandler() AppHandler {
 	appHandler := AppHandler{
 		AuthHandler: http.NewAuthHandler(authUsecase.New(userService.New(userRepo), tokenService.New(tokenRepo), userRepo)),
 	}
+
 	return appHandler
 }

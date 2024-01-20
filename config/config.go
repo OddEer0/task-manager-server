@@ -7,13 +7,17 @@ import (
 	"github.com/joho/godotenv"
 )
 
-type Config struct {
-	Host             string
-	StoragePath      string
-	ApiKey           string
-	AccessTokenTime  string
-	RefreshTokenTime string
-}
+type (
+	Config struct {
+		Env              string
+		Host             string
+		StoragePath      string
+		ApiKey           string
+		AccessTokenTime  string
+		RefreshTokenTime string
+		AbsPath          string
+	}
+)
 
 var instance *Config = nil
 
@@ -29,8 +33,10 @@ func NewConfig() (*Config, error) {
 	switch env {
 	case "":
 		cfgFilePath = filepath.Join(dir, "./config/.local.env")
+		env = "local"
 	case "test":
 		cfgFilePath = filepath.Join(dir, "./config/.test.env")
+		env = "local"
 	}
 
 	err := godotenv.Load(cfgFilePath)
@@ -39,6 +45,8 @@ func NewConfig() (*Config, error) {
 	}
 
 	instance = &Config{
+		Env:              env,
+		AbsPath:          dir,
 		Host:             os.Getenv("HOST"),
 		StoragePath:      os.Getenv("STORAGE_PATH"),
 		ApiKey:           os.Getenv("API_KEY"),
