@@ -10,6 +10,7 @@ import (
 
 const (
 	DefaultBadRequestMessage          = "Bad request"
+	DefaultNotFoundErrorMessage       = "Not found"
 	DefaultForbiddenMessage           = "Forbidden"
 	DefaultInternalServerErrorMessage = "Server error"
 	DefaultConflictMessage            = "Conflict"
@@ -105,4 +106,11 @@ func UnprocessableEntity(message string, devMessages ...string) error {
 		message = DefaultUnprocessableEntity
 	}
 	return HttpAppError(message, http.StatusUnprocessableEntity, devMessages...)
+}
+
+func NotFound(message string, devMessages ...string) error {
+	if message == "" {
+		message = DefaultNotFoundErrorMessage
+	}
+	return HttpAppError(message, http.StatusNotFound, devMessages...)
 }

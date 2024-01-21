@@ -10,5 +10,6 @@ func AppRouter(router *chi.Mux) {
 
 	router.Route("/http/v1", func(router chi.Router) {
 		router.Post("/auth/registration", appHandler.Registration)
+		router.Post("/auth/login", appHandler.Login)
 	})
 }

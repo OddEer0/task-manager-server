@@ -14,8 +14,14 @@ func (t *tokenService) Generate(data appDto.GenerateTokenServiceDto) (*JwtTokens
 	if err != nil {
 		return nil, appErrors.InternalServerError("", "target: TokenService, method: Generate. ", "Load config error, config error: ", err.Error())
 	}
-	accessDuration, _ := time.ParseDuration(cfg.AccessTokenTime)
-	refreshDuration, _ := time.ParseDuration(cfg.RefreshTokenTime)
+	accessDuration, err := time.ParseDuration(cfg.AccessTokenTime)
+	if err != nil {
+		return nil, appErrors.InternalServerError("", "target: TokenService, method: Generate. ", "Parse access token time duration")
+	}
+	refreshDuration, err := time.ParseDuration(cfg.RefreshTokenTime)
+	if err != nil {
+		return nil, appErrors.InternalServerError("", "target: TokenService, method: Generate. ", "Parse refresh token time duration")
+	}
 	accessClaims := CustomClaims{
 		JwtUserData:    data,
 		StandardClaims: jwt.StandardClaims{ExpiresAt: time.Now().Add(accessDuration).Unix()},
