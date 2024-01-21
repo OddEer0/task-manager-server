@@ -11,6 +11,7 @@ import (
 
 type AuthHandler interface {
 	Registration(res http.ResponseWriter, req *http.Request)
+	Login(res http.ResponseWriter, req *http.Request)
 }
 
 type authHandler struct {
@@ -41,4 +42,24 @@ func (a authHandler) Registration(res http.ResponseWriter, req *http.Request) {
 	}
 
 	httpUtils.SendJson(res, http.StatusOK, registerResult.User)
+}
+
+func (a authHandler) Login(res http.ResponseWriter, req *http.Request) {
+	var body appDto.LoginUseCaseDto
+	err := httpUtils.BodyJson(req, &body)
+	if err != nil {
+		appErrors.ErrorHandler(res, appErrors.BadRequest(""))
+		return
+	}
+	defer func() {
+		_ = req.Body.Close()
+	}()
+
+	loginResult, err := a.AuthUseCase.Login(req.Context(), body)
+	if err != nil {
+		appErrors.ErrorHandler(res, err)
+		return
+	}
+
+	httpUtils.SendJson(res, http.StatusOK, loginResult.User)
 }

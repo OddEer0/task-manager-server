@@ -95,6 +95,19 @@ func (u *userRepository) HasUserByEmail(ctx context.Context, email string) (bool
 	}), nil
 }
 
+func (u *userRepository) GetByNick(ctx context.Context, nick string) (*aggregate.UserAggregate, error) {
+	user, ok := lo.Find(u.mock.Users, func(item *models.User) bool {
+		if item.Nick == nick {
+			return true
+		}
+		return false
+	})
+	if ok {
+		return &aggregate.UserAggregate{User: *user}, nil
+	}
+	return nil, nil
+}
+
 func NewUserRepository() repository.UserRepository {
 	return &userRepository{mock.NewMockUser()}
 }
