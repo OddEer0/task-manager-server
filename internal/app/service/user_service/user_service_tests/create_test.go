@@ -9,10 +9,10 @@ import (
 	appDto "github.com/OddEer0/task-manager-server/internal/app/app_dto"
 	"github.com/OddEer0/task-manager-server/internal/app/service/user_service"
 	"github.com/OddEer0/task-manager-server/internal/common/constants"
+	"github.com/OddEer0/task-manager-server/internal/common/constants/app_errors"
 	"github.com/OddEer0/task-manager-server/internal/domain/aggregate"
 	"github.com/OddEer0/task-manager-server/internal/infrastructure/storage/mock_repository"
 	"github.com/OddEer0/task-manager-server/internal/presentation/mock"
-	"github.com/OddEer0/task-manager-server/pkg/app_errors"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -79,7 +79,7 @@ func TestUserServiceCreate(t *testing.T) {
 				}
 			} else {
 				assert.Equal(t, (*aggregate.UserAggregate)(nil), result)
-				var appErr *appErrors.AppError
+				var appErr *appErrors.appErrors
 				if errors.As(err, &appErr) {
 					assert.Equal(t, tc.errCode, appErr.Code)
 				}

@@ -4,8 +4,8 @@ import (
 	"context"
 
 	appDto "github.com/OddEer0/task-manager-server/internal/app/app_dto"
+	"github.com/OddEer0/task-manager-server/internal/common/lib/app_errors"
 	"github.com/OddEer0/task-manager-server/internal/presentation/mapper"
-	appErrors "github.com/OddEer0/task-manager-server/pkg/app_errors"
 )
 
 func (a *authUseCase) Registration(ctx context.Context, data appDto.RegistrationUseCaseDto) (*AuthResult, error) {

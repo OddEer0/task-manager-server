@@ -7,7 +7,7 @@ import (
 	"github.com/OddEer0/task-manager-server/config"
 	appDto "github.com/OddEer0/task-manager-server/internal/app/app_dto"
 	authUsecase "github.com/OddEer0/task-manager-server/internal/app/usecase/auth_usecase"
-	"github.com/OddEer0/task-manager-server/pkg/app_errors"
+	"github.com/OddEer0/task-manager-server/internal/common/lib/app_errors"
 	httpUtils "github.com/OddEer0/task-manager-server/pkg/http_utils"
 )
 
