@@ -4,12 +4,11 @@ import (
 	"time"
 
 	"github.com/OddEer0/task-manager-server/config"
-	appDto "github.com/OddEer0/task-manager-server/internal/app/app_dto"
 	"github.com/OddEer0/task-manager-server/internal/common/lib/app_errors"
 	"github.com/dgrijalva/jwt-go"
 )
 
-func (t *tokenService) Generate(data appDto.GenerateTokenServiceDto) (*JwtTokens, error) {
+func (t *tokenService) Generate(data JwtUserData) (*JwtTokens, error) {
 	cfg, err := config.NewConfig()
 	if err != nil {
 		return nil, appErrors.InternalServerError("", "target: TokenService, method: Generate. ", "Load config error, config error: ", err.Error())

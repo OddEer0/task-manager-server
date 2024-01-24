@@ -15,6 +15,7 @@ type AuthHandler interface {
 	Registration(res http.ResponseWriter, req *http.Request) error
 	Login(res http.ResponseWriter, req *http.Request) error
 	Logout(res http.ResponseWriter, req *http.Request) error
+	Refresh(res http.ResponseWriter, req *http.Request) error
 }
 
 type authHandler struct {
@@ -145,5 +146,22 @@ func (a authHandler) Logout(res http.ResponseWriter, req *http.Request) error {
 	}
 
 	a.removeToken(res)
+	return nil
+}
+
+func (a authHandler) Refresh(res http.ResponseWriter, req *http.Request) error {
+	token, err := req.Cookie("refreshToken")
+	if err != nil {
+		return appErrors.BadRequest("")
+	}
+	result, err := a.AuthUseCase.Refresh(req.Context(), token.Value)
+	if err != nil {
+		return err
+	}
+	err = a.setToken(res, result.Tokens.RefreshToken, result.Tokens.AccessToken)
+	if err != nil {
+		return appErrors.InternalServerError("set token error")
+	}
+	httpUtils.SendJson(res, http.StatusOK, result.User)
 	return nil
 }

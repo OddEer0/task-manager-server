@@ -4,6 +4,7 @@ import (
 	"context"
 
 	appDto "github.com/OddEer0/task-manager-server/internal/app/app_dto"
+	tokenService "github.com/OddEer0/task-manager-server/internal/app/service/token_service"
 	"github.com/OddEer0/task-manager-server/internal/common/constants"
 	"github.com/OddEer0/task-manager-server/internal/common/lib/app_errors"
 	"github.com/OddEer0/task-manager-server/internal/presentation/mapper"
@@ -28,7 +29,7 @@ func (a *authUseCase) Login(ctx context.Context, data appDto.LoginUseCaseDto) (*
 		return nil, appErrors.Forbidden(constants.NickOrPasswordIncorrect)
 	}
 
-	tokens, err := a.TokenService.Generate(appDto.GenerateTokenServiceDto{})
+	tokens, err := a.TokenService.Generate(tokenService.JwtUserData{Id: userAggregate.User.Id, Role: userAggregate.User.Role})
 	if err != nil {
 		return nil, err
 	}

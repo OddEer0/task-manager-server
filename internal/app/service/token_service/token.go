@@ -15,13 +15,20 @@ type (
 		RefreshToken string
 	}
 
+	JwtUserData struct {
+		Id   string `json:"id"`
+		Role string `json:"role"`
+	}
+
 	CustomClaims struct {
-		JwtUserData appDto.GenerateTokenServiceDto
+		JwtUserData `json:"jwtUserData"`
 		jwt.StandardClaims
 	}
 
 	Service interface {
-		Generate(data appDto.GenerateTokenServiceDto) (*JwtTokens, error)
+		HasByValue(ctx context.Context, refreshToken string) (bool, error)
+		Generate(data JwtUserData) (*JwtTokens, error)
+		ValidateRefreshToken(refreshToken string) (*JwtUserData, error)
 		Save(ctx context.Context, data appDto.SaveTokenServiceDto) (*models.Token, error)
 		DeleteByValue(ctx context.Context, value string) error
 	}

@@ -9,11 +9,11 @@ import (
 )
 
 func (t *tokenService) Save(ctx context.Context, data appDto.SaveTokenServiceDto) (*models.Token, error) {
-	token, err := t.TokenRepository.GetById(ctx, data.Id)
+	has, err := t.TokenRepository.HasByValue(ctx, data.RefreshToken)
 	if err != nil {
 		return nil, appErrors.InternalServerError("")
 	}
-	if token == nil {
+	if !has {
 		token, err := t.TokenRepository.Create(ctx, &models.Token{Id: data.Id, Value: data.RefreshToken})
 		if err != nil {
 			return nil, appErrors.InternalServerError("")
@@ -21,7 +21,7 @@ func (t *tokenService) Save(ctx context.Context, data appDto.SaveTokenServiceDto
 		return token, nil
 	}
 
-	token, err = t.TokenRepository.Update(ctx, data.Id, &models.Token{Id: data.Id, Value: data.RefreshToken})
+	token, err := t.TokenRepository.Update(ctx, data.Id, &models.Token{Id: data.Id, Value: data.RefreshToken})
 	if err != nil {
 		return nil, appErrors.InternalServerError("")
 	}

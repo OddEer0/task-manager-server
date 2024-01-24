@@ -4,6 +4,7 @@ import (
 	"context"
 
 	appDto "github.com/OddEer0/task-manager-server/internal/app/app_dto"
+	tokenService "github.com/OddEer0/task-manager-server/internal/app/service/token_service"
 	"github.com/OddEer0/task-manager-server/internal/common/lib/app_errors"
 	"github.com/OddEer0/task-manager-server/internal/presentation/mapper"
 )
@@ -13,7 +14,11 @@ func (a *authUseCase) Registration(ctx context.Context, data appDto.Registration
 	if err != nil {
 		return nil, err
 	}
-	tokens, err := a.TokenService.Generate(appDto.GenerateTokenServiceDto{Id: userAggregate.User.Id, Role: userAggregate.User.Role})
+	tokens, err := a.TokenService.Generate(tokenService.JwtUserData{Id: userAggregate.User.Id, Role: userAggregate.User.Role})
+	if err != nil {
+		return nil, err
+	}
+	_, err = a.TokenService.Save(ctx, appDto.SaveTokenServiceDto{Id: userAggregate.User.Id, RefreshToken: tokens.RefreshToken})
 	if err != nil {
 		return nil, err
 	}
