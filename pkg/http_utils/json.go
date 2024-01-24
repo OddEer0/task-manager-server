@@ -6,7 +6,7 @@ import (
 	"io"
 	"net/http"
 
-	appValidator "github.com/OddEer0/task-manager-server/pkg/app_validator"
+	"github.com/OddEer0/task-manager-server/internal/common/lib/app_validator"
 )
 
 const (

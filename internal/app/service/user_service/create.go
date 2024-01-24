@@ -8,8 +8,8 @@ import (
 	"github.com/OddEer0/task-manager-server/internal/app/app_dto"
 	"github.com/OddEer0/task-manager-server/internal/app/factories/user_aggregate_factory"
 	"github.com/OddEer0/task-manager-server/internal/common/constants"
+	"github.com/OddEer0/task-manager-server/internal/common/lib/app_errors"
 	"github.com/OddEer0/task-manager-server/internal/domain/aggregate"
-	"github.com/OddEer0/task-manager-server/pkg/app_errors"
 	"github.com/google/uuid"
 )
 

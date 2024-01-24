@@ -6,6 +6,7 @@ import (
 
 	"github.com/OddEer0/task-manager-server/config"
 	loggerLib "github.com/OddEer0/task-manager-server/internal/infrastructure/logger"
+	"github.com/OddEer0/task-manager-server/internal/presentation/middleware"
 	appRouter "github.com/OddEer0/task-manager-server/internal/presentation/router"
 	"github.com/go-chi/chi/v5"
 )
@@ -19,6 +20,7 @@ func main() {
 
 	router := chi.NewRouter()
 
+	router.Use(middleware.PanicMiddleware(logger))
 	router.Use(loggerLib.LoggingMiddleware(logger))
 
 	appRouter.AppRouter(router)

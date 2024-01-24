@@ -4,8 +4,8 @@ import (
 	"context"
 
 	appDto "github.com/OddEer0/task-manager-server/internal/app/app_dto"
+	"github.com/OddEer0/task-manager-server/internal/common/lib/app_errors"
 	"github.com/OddEer0/task-manager-server/internal/domain/models"
-	appErrors "github.com/OddEer0/task-manager-server/pkg/app_errors"
 )
 
 func (t *tokenService) Save(ctx context.Context, data appDto.SaveTokenServiceDto) (*models.Token, error) {

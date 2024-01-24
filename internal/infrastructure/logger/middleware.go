@@ -1,9 +1,9 @@
 package logger
 
 import (
+	"bytes"
 	"log/slog"
 	"net/http"
-	"runtime/debug"
 	"time"
 )
 
@@ -11,10 +11,16 @@ type responseWriter struct {
 	http.ResponseWriter
 	status      int
 	wroteHeader bool
+	buf         *bytes.Buffer
+}
+
+func (rw *responseWriter) Write(b []byte) (int, error) {
+	rw.buf.Write(b)
+	return rw.ResponseWriter.Write(b)
 }
 
 func wrapResponseWriter(w http.ResponseWriter) *responseWriter {
-	return &responseWriter{ResponseWriter: w}
+	return &responseWriter{ResponseWriter: w, buf: bytes.NewBuffer(nil)}
 }
 
 func (rw *responseWriter) Status() int {
@@ -36,26 +42,19 @@ func (rw *responseWriter) WriteHeader(code int) {
 func LoggingMiddleware(logger *slog.Logger) func(http.Handler) http.Handler {
 	return func(next http.Handler) http.Handler {
 		fn := func(w http.ResponseWriter, r *http.Request) {
-			defer func() {
-				if err := recover(); err != nil {
-					w.WriteHeader(http.StatusInternalServerError)
-					logger.Error(
-						"err", err,
-						"trace", debug.Stack(),
-					)
-				}
-			}()
-
 			start := time.Now()
 			wrapped := wrapResponseWriter(w)
 			next.ServeHTTP(wrapped, r)
 
-			logger.Debug(
-				"debug", "status", wrapped.status,
-				"method", r.Method,
-				"path", r.URL.EscapedPath(),
-				"duration", time.Since(start),
-			)
+			if wrapped.status < 400 {
+				logger.Debug(
+					"debug", "status", wrapped.status,
+					"method", r.Method,
+					"path", r.URL.EscapedPath(),
+					"duration", time.Since(start),
+					"response", wrapped.buf.String(),
+				)
+			}
 		}
 
 		return http.HandlerFunc(fn)

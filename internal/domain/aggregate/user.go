@@ -1,8 +1,8 @@
 package aggregate
 
 import (
+	"github.com/OddEer0/task-manager-server/internal/common/lib/app_validator"
 	"github.com/OddEer0/task-manager-server/internal/domain/models"
-	"github.com/OddEer0/task-manager-server/pkg/app_validator"
 )
 
 type UserAggregate struct {

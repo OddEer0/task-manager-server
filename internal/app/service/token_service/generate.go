@@ -5,7 +5,7 @@ import (
 
 	"github.com/OddEer0/task-manager-server/config"
 	appDto "github.com/OddEer0/task-manager-server/internal/app/app_dto"
-	appErrors "github.com/OddEer0/task-manager-server/pkg/app_errors"
+	"github.com/OddEer0/task-manager-server/internal/common/lib/app_errors"
 	"github.com/dgrijalva/jwt-go"
 )
 

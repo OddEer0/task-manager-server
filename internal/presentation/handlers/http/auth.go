@@ -7,13 +7,13 @@ import (
 	"github.com/OddEer0/task-manager-server/config"
 	appDto "github.com/OddEer0/task-manager-server/internal/app/app_dto"
 	authUsecase "github.com/OddEer0/task-manager-server/internal/app/usecase/auth_usecase"
-	"github.com/OddEer0/task-manager-server/pkg/app_errors"
+	"github.com/OddEer0/task-manager-server/internal/common/lib/app_errors"
 	httpUtils "github.com/OddEer0/task-manager-server/pkg/http_utils"
 )
 
 type AuthHandler interface {
-	Registration(res http.ResponseWriter, req *http.Request)
-	Login(res http.ResponseWriter, req *http.Request)
+	Registration(res http.ResponseWriter, req *http.Request) error
+	Login(res http.ResponseWriter, req *http.Request) error
 }
 
 type authHandler struct {
@@ -65,12 +65,11 @@ func (a authHandler) setToken(res http.ResponseWriter, refreshToken string, acce
 	return nil
 }
 
-func (a authHandler) Registration(res http.ResponseWriter, req *http.Request) {
+func (a authHandler) Registration(res http.ResponseWriter, req *http.Request) error {
 	var body appDto.RegistrationUseCaseDto
 	err := httpUtils.BodyJson(req, &body)
 	if err != nil {
-		appErrors.ErrorHandler(res, appErrors.BadRequest(""))
-		return
+		return appErrors.BadRequest("")
 	}
 	defer func() {
 		_ = req.Body.Close()
@@ -78,24 +77,22 @@ func (a authHandler) Registration(res http.ResponseWriter, req *http.Request) {
 
 	registerResult, err := a.AuthUseCase.Registration(req.Context(), body)
 	if err != nil {
-		appErrors.ErrorHandler(res, err)
-		return
+		return err
 	}
 
 	err = a.setToken(res, registerResult.Tokens.RefreshToken, registerResult.Tokens.AccessToken)
 	if err != nil {
-		appErrors.ErrorHandler(res, appErrors.InternalServerError(err.Error()))
-		return
+		return appErrors.InternalServerError(err.Error())
 	}
 	httpUtils.SendJson(res, http.StatusOK, registerResult.User)
+	return nil
 }
 
-func (a authHandler) Login(res http.ResponseWriter, req *http.Request) {
+func (a authHandler) Login(res http.ResponseWriter, req *http.Request) error {
 	var body appDto.LoginUseCaseDto
 	err := httpUtils.BodyJson(req, &body)
 	if err != nil {
-		appErrors.ErrorHandler(res, appErrors.BadRequest(""))
-		return
+		return appErrors.BadRequest("")
 	}
 	defer func() {
 		_ = req.Body.Close()
@@ -103,15 +100,14 @@ func (a authHandler) Login(res http.ResponseWriter, req *http.Request) {
 
 	loginResult, err := a.AuthUseCase.Login(req.Context(), body)
 	if err != nil {
-		appErrors.ErrorHandler(res, err)
-		return
+		return err
 	}
 
 	err = a.setToken(res, loginResult.Tokens.RefreshToken, loginResult.Tokens.AccessToken)
 	if err != nil {
-		appErrors.ErrorHandler(res, appErrors.InternalServerError("set token error"))
-		return
+		return appErrors.InternalServerError("set token error")
 	}
 
 	httpUtils.SendJson(res, http.StatusOK, loginResult.User)
+	return nil
 }
