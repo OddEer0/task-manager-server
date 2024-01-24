@@ -13,6 +13,16 @@ type tokenRepository struct {
 	mock *mock.MockedToken
 }
 
+func (t tokenRepository) DeleteByValue(ctx context.Context, value string) error {
+	t.mock.Tokens = lo.Filter(t.mock.Tokens, func(item *models.Token, index int) bool {
+		if item.Value == value {
+			return false
+		}
+		return true
+	})
+	return nil
+}
+
 func (t tokenRepository) Create(ctx context.Context, data *models.Token) (*models.Token, error) {
 	t.mock.Tokens = append(t.mock.Tokens, data)
 	return data, nil

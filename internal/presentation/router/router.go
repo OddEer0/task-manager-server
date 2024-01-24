@@ -13,7 +13,8 @@ func AppRouter(router *chi.Mux) {
 	middleware := appErrors.LoggingMiddleware(logger.NewLogger())
 
 	router.Route("/http/v1", func(router chi.Router) {
-		router.Post("/auth/registration", middleware(appHandler.Registration))
-		router.Post("/auth/login", middleware(appHandler.Login))
+		router.Post("/auth/registration", middleware(appHandler.AuthHandler.Registration))
+		router.Post("/auth/login", middleware(appHandler.AuthHandler.Login))
+		router.Post("/auth/logout", middleware(appHandler.AuthHandler.Logout))
 	})
 }

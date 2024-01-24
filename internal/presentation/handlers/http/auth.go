@@ -14,6 +14,7 @@ import (
 type AuthHandler interface {
 	Registration(res http.ResponseWriter, req *http.Request) error
 	Login(res http.ResponseWriter, req *http.Request) error
+	Logout(res http.ResponseWriter, req *http.Request) error
 }
 
 type authHandler struct {
@@ -65,6 +66,27 @@ func (a authHandler) setToken(res http.ResponseWriter, refreshToken string, acce
 	return nil
 }
 
+func (a authHandler) removeToken(res http.ResponseWriter) {
+	refreshCookie := http.Cookie{
+		Name:     "refreshToken",
+		Value:    "",
+		Path:     "/",
+		MaxAge:   -1,
+		HttpOnly: true,
+	}
+
+	accessCookie := http.Cookie{
+		Name:     "accessToken",
+		Value:    "",
+		Path:     "/",
+		MaxAge:   -1,
+		HttpOnly: true,
+	}
+
+	http.SetCookie(res, &accessCookie)
+	http.SetCookie(res, &refreshCookie)
+}
+
 func (a authHandler) Registration(res http.ResponseWriter, req *http.Request) error {
 	var body appDto.RegistrationUseCaseDto
 	err := httpUtils.BodyJson(req, &body)
@@ -109,5 +131,19 @@ func (a authHandler) Login(res http.ResponseWriter, req *http.Request) error {
 	}
 
 	httpUtils.SendJson(res, http.StatusOK, loginResult.User)
+	return nil
+}
+
+func (a authHandler) Logout(res http.ResponseWriter, req *http.Request) error {
+	token, err := req.Cookie("refreshToken")
+	if err != nil {
+		return appErrors.BadRequest("")
+	}
+	err = a.AuthUseCase.Logout(req.Context(), token.Value)
+	if err != nil {
+		return err
+	}
+
+	a.removeToken(res)
 	return nil
 }
