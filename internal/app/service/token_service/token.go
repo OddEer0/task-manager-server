@@ -23,7 +23,7 @@ type (
 	Service interface {
 		Generate(data appDto.GenerateTokenServiceDto) (*JwtTokens, error)
 		Save(ctx context.Context, data appDto.SaveTokenServiceDto) (*models.Token, error)
-		Delete(ctx context.Context, id string) error
+		DeleteByValue(ctx context.Context, value string) error
 	}
 
 	tokenService struct {
