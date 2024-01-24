@@ -10,4 +10,5 @@ import (
 type TokenRepository interface {
 	shared.CRUDRepository[*models.Token, *models.Token]
 	DeleteByValue(ctx context.Context, value string) error
+	HasByValue(ctx context.Context, value string) (bool, error)
 }

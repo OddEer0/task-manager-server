@@ -16,5 +16,6 @@ func AppRouter(router *chi.Mux) {
 		router.Post("/auth/registration", middleware(appHandler.AuthHandler.Registration))
 		router.Post("/auth/login", middleware(appHandler.AuthHandler.Login))
 		router.Post("/auth/logout", middleware(appHandler.AuthHandler.Logout))
+		router.Get("/auth/refresh", middleware(appHandler.AuthHandler.Refresh))
 	})
 }

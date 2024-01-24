@@ -13,7 +13,7 @@ type tokenRepository struct {
 	mock *mock.MockedToken
 }
 
-func (t tokenRepository) DeleteByValue(ctx context.Context, value string) error {
+func (t *tokenRepository) DeleteByValue(ctx context.Context, value string) error {
 	t.mock.Tokens = lo.Filter(t.mock.Tokens, func(item *models.Token, index int) bool {
 		if item.Value == value {
 			return false
@@ -23,12 +23,13 @@ func (t tokenRepository) DeleteByValue(ctx context.Context, value string) error 
 	return nil
 }
 
-func (t tokenRepository) Create(ctx context.Context, data *models.Token) (*models.Token, error) {
-	t.mock.Tokens = append(t.mock.Tokens, data)
-	return data, nil
+func (t *tokenRepository) Create(ctx context.Context, data *models.Token) (*models.Token, error) {
+	token := models.Token{Id: data.Id, Value: data.Value}
+	t.mock.Tokens = append(t.mock.Tokens, &token)
+	return &token, nil
 }
 
-func (t tokenRepository) GetById(ctx context.Context, id string) (*models.Token, error) {
+func (t *tokenRepository) GetById(ctx context.Context, id string) (*models.Token, error) {
 	token, ok := lo.Find(t.mock.Tokens, func(item *models.Token) bool {
 		if item.Id == id {
 			return true
@@ -41,7 +42,7 @@ func (t tokenRepository) GetById(ctx context.Context, id string) (*models.Token,
 	return token, nil
 }
 
-func (t tokenRepository) Update(ctx context.Context, id string, data *models.Token) (*models.Token, error) {
+func (t *tokenRepository) Update(ctx context.Context, id string, data *models.Token) (*models.Token, error) {
 	for _, item := range t.mock.Tokens {
 		if item.Id == id {
 			item.Id = data.Id
@@ -52,7 +53,7 @@ func (t tokenRepository) Update(ctx context.Context, id string, data *models.Tok
 	return nil, nil
 }
 
-func (t tokenRepository) Delete(ctx context.Context, id string) error {
+func (t *tokenRepository) Delete(ctx context.Context, id string) error {
 	t.mock.Tokens = lo.Filter(t.mock.Tokens, func(item *models.Token, index int) bool {
 		if item.Id == id {
 			return false
@@ -60,6 +61,15 @@ func (t tokenRepository) Delete(ctx context.Context, id string) error {
 		return true
 	})
 	return nil
+}
+
+func (t *tokenRepository) HasByValue(ctx context.Context, value string) (bool, error) {
+	for _, token := range t.mock.Tokens {
+		if token.Value == value {
+			return true, nil
+		}
+	}
+	return false, nil
 }
 
 func NewTokenRepository() repository.TokenRepository {
