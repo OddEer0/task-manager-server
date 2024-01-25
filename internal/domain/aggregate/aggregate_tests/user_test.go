@@ -6,7 +6,7 @@ import (
 	"testing"
 	"time"
 
-	appDto "github.com/OddEer0/task-manager-server/internal/app/app_dto"
+	tokenService "github.com/OddEer0/task-manager-server/internal/app/service/token_service"
 	"github.com/OddEer0/task-manager-server/internal/domain/aggregate"
 	"github.com/OddEer0/task-manager-server/internal/domain/models"
 	"github.com/OddEer0/task-manager-server/internal/presentation/mock"
@@ -16,7 +16,7 @@ import (
 )
 
 type CustomClaims struct {
-	JwtUserData appDto.GenerateTokenServiceDto
+	JwtUserData tokenService.JwtUserData
 	jwt.StandardClaims
 }
 
@@ -118,7 +118,7 @@ func TestUserAggregateSetToken(t *testing.T) {
 	memMockUser := mock.NewMockUser()
 	accessDuration, _ := time.ParseDuration("15m")
 	accessClaims := CustomClaims{
-		JwtUserData:    appDto.GenerateTokenServiceDto{Id: memMockUser.User.Id, Role: memMockUser.User.Role},
+		JwtUserData:    tokenService.JwtUserData{Id: memMockUser.User.Id, Role: memMockUser.User.Role},
 		StandardClaims: jwt.StandardClaims{ExpiresAt: time.Now().Add(accessDuration).Unix()},
 	}
 	accessToken := jwt.NewWithClaims(jwt.SigningMethodHS256, accessClaims)
