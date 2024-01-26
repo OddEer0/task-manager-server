@@ -13,8 +13,9 @@ type MockUseCases struct {
 
 func NewUseCases() *MockUseCases {
 	userRepo := mock_repository.NewUserRepository()
+	tokenRepo := mock_repository.NewTokenRepository()
 
 	return &MockUseCases{
-		AuthUseCase: authUsecase.New(userService.New(userRepo), tokenService.New(nil), userRepo),
+		AuthUseCase: authUsecase.New(userService.New(userRepo), tokenService.New(tokenRepo), userRepo),
 	}
 }

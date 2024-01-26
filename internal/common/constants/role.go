@@ -1,8 +1,6 @@
 package constants
 
 const (
-	Admin            = "ADMIN"
-	AdminDescription = "Администратор"
-	User             = "USER"
-	UserDescription  = "Пользователь"
+	Admin = "ADMIN"
+	User  = "USER"
 )

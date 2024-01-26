@@ -8,16 +8,16 @@ import (
 	"github.com/OddEer0/task-manager-server/internal/domain/aggregate"
 	"github.com/OddEer0/task-manager-server/internal/domain/models"
 	"github.com/OddEer0/task-manager-server/internal/domain/repository"
-	"github.com/OddEer0/task-manager-server/internal/presentation/mock"
+	inMemDb "github.com/OddEer0/task-manager-server/internal/infrastructure/storage/in_mem_db"
 	"github.com/samber/lo"
 )
 
 type userRepository struct {
-	mock *mock.MockedUser
+	db *inMemDb.InMemDb
 }
 
 func (u *userRepository) Create(ctx context.Context, data *aggregate.UserAggregate) (*aggregate.UserAggregate, error) {
-	has := lo.ContainsBy(u.mock.Users, func(item *models.User) bool {
+	has := lo.ContainsBy(u.db.Users, func(item *models.User) bool {
 		if item.Nick == data.User.Nick || item.Email == data.User.Email {
 			return true
 		}
@@ -26,13 +26,14 @@ func (u *userRepository) Create(ctx context.Context, data *aggregate.UserAggrega
 	if has {
 		return nil, errors.New("conflict fields")
 	}
-	u.mock.Users = append(u.mock.Users, &data.User)
+	u.db.Users = append(u.db.Users, &data.User)
+
 	return data, nil
 }
 
 func (u *userRepository) GetById(ctx context.Context, id string) (*aggregate.UserAggregate, error) {
 	var searched *models.User = nil
-	for _, user := range u.mock.Users {
+	for _, user := range u.db.Users {
 		if user.Id == id {
 			searched = user
 		}
@@ -46,7 +47,7 @@ func (u *userRepository) GetById(ctx context.Context, id string) (*aggregate.Use
 
 func (u *userRepository) Update(ctx context.Context, id string, data *aggregate.UserAggregate) (*aggregate.UserAggregate, error) {
 	has := false
-	lo.Map(u.mock.Users, func(user *models.User, i int) *models.User {
+	lo.Map(u.db.Users, func(user *models.User, i int) *models.User {
 		if id == user.Id {
 			has = true
 			copyUser := data.User
@@ -63,7 +64,7 @@ func (u *userRepository) Update(ctx context.Context, id string, data *aggregate.
 
 func (u *userRepository) Delete(ctx context.Context, id string) error {
 	has := false
-	lo.Filter(u.mock.Users, func(user *models.User, index int) bool {
+	lo.Filter(u.db.Users, func(user *models.User, index int) bool {
 		if user.Id != id {
 			return true
 		}
@@ -78,7 +79,7 @@ func (u *userRepository) Delete(ctx context.Context, id string) error {
 }
 
 func (u *userRepository) HasUserByNick(ctx context.Context, nick string) (bool, error) {
-	return lo.ContainsBy(u.mock.Users, func(item *models.User) bool {
+	return lo.ContainsBy(u.db.Users, func(item *models.User) bool {
 		if item.Nick == nick {
 			return true
 		}
@@ -87,7 +88,7 @@ func (u *userRepository) HasUserByNick(ctx context.Context, nick string) (bool, 
 }
 
 func (u *userRepository) HasUserByEmail(ctx context.Context, email string) (bool, error) {
-	return lo.ContainsBy(u.mock.Users, func(item *models.User) bool {
+	return lo.ContainsBy(u.db.Users, func(item *models.User) bool {
 		if item.Email == email {
 			return true
 		}
@@ -96,7 +97,7 @@ func (u *userRepository) HasUserByEmail(ctx context.Context, email string) (bool
 }
 
 func (u *userRepository) GetByNick(ctx context.Context, nick string) (*aggregate.UserAggregate, error) {
-	user, ok := lo.Find(u.mock.Users, func(item *models.User) bool {
+	user, ok := lo.Find(u.db.Users, func(item *models.User) bool {
 		if item.Nick == nick {
 			return true
 		}
@@ -109,5 +110,5 @@ func (u *userRepository) GetByNick(ctx context.Context, nick string) (*aggregate
 }
 
 func NewUserRepository() repository.UserRepository {
-	return &userRepository{mock.NewMockUser()}
+	return &userRepository{inMemDb.New()}
 }

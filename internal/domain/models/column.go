@@ -1,10 +1,10 @@
 package models
 
 type Column struct {
-	Id        string `json:"id"`
-	Name      string `json:"name"`
-	Bg        string `json:"bg"`
-	Color     string `json:"color"`
-	Order     int    `json:"order"`
-	ProjectId string `json:"projectId"`
+	Id        string `json:"id" validate:"require,uuidv4"`
+	Name      string `json:"name" validate:"require,min=3,max=50"`
+	Bg        string `json:"bg" validate:"require"`
+	Color     string `json:"color" validate:"require"`
+	Order     int    `json:"order" validate:"require"`
+	ProjectId string `json:"projectId" validate:"require,uuidv4"`
 }

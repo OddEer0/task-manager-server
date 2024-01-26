@@ -5,7 +5,6 @@ import (
 	"testing"
 
 	"github.com/OddEer0/task-manager-server/config"
-	appDto "github.com/OddEer0/task-manager-server/internal/app/app_dto"
 	tokenService "github.com/OddEer0/task-manager-server/internal/app/service/token_service"
 	"github.com/OddEer0/task-manager-server/internal/infrastructure/storage/mock_repository"
 	"github.com/OddEer0/task-manager-server/internal/presentation/mock"
@@ -21,11 +20,11 @@ func TestTokenServiceGenerate(t *testing.T) {
 	}
 	testCases := []struct {
 		name string
-		data appDto.GenerateTokenServiceDto
+		data tokenService.JwtUserData
 	}{
 		{
 			name: "Should generate token",
-			data: appDto.GenerateTokenServiceDto{Id: memMockUser.User.Id, Role: memMockUser.User.Role},
+			data: tokenService.JwtUserData{Id: memMockUser.User.Id, Role: memMockUser.User.Role},
 		},
 	}
 

@@ -1,9 +1,9 @@
 package models
 
 type Tag struct {
-	Id        string `json:"id"`
-	Name      string `json:"name"`
-	Color     string `json:"color"`
-	Bg        string `json:"bg"`
-	ProjectId string `json:"projectId"`
+	Id        string `json:"id" validate:"required,uuidv4"`
+	Name      string `json:"name" validate:"required,min=3,max=30"`
+	Color     string `json:"color" validate:"required"`
+	Bg        string `json:"bg" validate:"required"`
+	ProjectId string `json:"projectId" validate:"required,uuidv4"`
 }
