@@ -27,6 +27,8 @@ func main() {
 
 	server := http.Server{Addr: cfg.Host, Handler: router}
 
+	logger.Info("Server started on host", "host", cfg.Host)
+
 	if err := server.ListenAndServe(); err != nil {
 		logger.Error("Failed to start server")
 	}
