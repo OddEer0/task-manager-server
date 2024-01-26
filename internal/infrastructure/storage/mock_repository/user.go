@@ -27,6 +27,7 @@ func (u *userRepository) Create(ctx context.Context, data *aggregate.UserAggrega
 		return nil, errors.New("conflict fields")
 	}
 	u.db.Users = append(u.db.Users, &data.User)
+
 	return data, nil
 }
 
