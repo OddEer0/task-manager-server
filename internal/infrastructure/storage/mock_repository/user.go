@@ -28,6 +28,11 @@ func (u *userRepository) Create(ctx context.Context, data *aggregate.UserAggrega
 	}
 	u.db.Users = append(u.db.Users, &data.User)
 
+	if data.Token != nil {
+		token := models.Token{Id: data.Token.Id, Value: data.Token.Value}
+		u.db.Tokens = append(u.db.Tokens, &token)
+	}
+
 	return data, nil
 }
 

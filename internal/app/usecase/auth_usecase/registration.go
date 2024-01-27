@@ -18,10 +18,6 @@ func (a *authUseCase) Registration(ctx context.Context, data appDto.Registration
 	if err != nil {
 		return nil, err
 	}
-	_, err = a.TokenService.Save(ctx, appDto.SaveTokenServiceDto{Id: userAggregate.User.Id, RefreshToken: tokens.RefreshToken})
-	if err != nil {
-		return nil, err
-	}
 	err = userAggregate.SetToken(tokens.RefreshToken)
 	if err != nil {
 		return nil, appErrors.UnprocessableEntity("", "target: AuthUseCase, method: Registration. ", "Aggregate SetToken method error: ", err.Error())

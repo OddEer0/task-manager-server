@@ -7,12 +7,11 @@ import (
 	"testing"
 
 	appDto "github.com/OddEer0/task-manager-server/internal/app/app_dto"
-	"github.com/OddEer0/task-manager-server/internal/app/service/user_service"
 	"github.com/OddEer0/task-manager-server/internal/common/constants"
 	appErrors "github.com/OddEer0/task-manager-server/internal/common/lib/app_errors"
 	"github.com/OddEer0/task-manager-server/internal/domain/aggregate"
-	"github.com/OddEer0/task-manager-server/internal/infrastructure/storage/mock_repository"
 	"github.com/OddEer0/task-manager-server/internal/presentation/mock"
+	"github.com/OddEer0/task-manager-server/internal/tests"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -61,8 +60,8 @@ func TestUserServiceCreate(t *testing.T) {
 		},
 	}
 
-	userRepo := mock_repository.NewUserRepository()
-	userServ := userService.New(userRepo)
+	services := tests.NewServices()
+	userServ := services.UserService
 
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
