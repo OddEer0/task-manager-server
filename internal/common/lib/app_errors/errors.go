@@ -9,15 +9,14 @@ import (
 type ContextKey string
 
 const (
-	ErrorKey                          ContextKey = "app-error"
-	DefaultBadRequestMessage                     = "Bad request"
-	DefaultNotFoundErrorMessage                  = "Not found"
-	DefaultForbiddenMessage                      = "Forbidden"
-	DefaultInternalServerErrorMessage            = "Server error"
-	DefaultConflictMessage                       = "Conflict"
-	DefaultUnauthorizedMessage                   = "Unauthorized"
-	DefaultUnprocessableEntity                   = "UnprocessableEntity"
-	DefaultInternalServerErrorJson               = "{\"code\": 500, \"message\": \"" + DefaultInternalServerErrorMessage + "\"}"
+	DefaultBadRequestMessage          = "Bad request"
+	DefaultNotFoundErrorMessage       = "Not found"
+	DefaultForbiddenMessage           = "Forbidden"
+	DefaultInternalServerErrorMessage = "Server error"
+	DefaultConflictMessage            = "Conflict"
+	DefaultUnauthorizedMessage        = "Unauthorized"
+	DefaultUnprocessableEntity        = "UnprocessableEntity"
+	DefaultInternalServerErrorJson    = "{\"code\": 500, \"message\": \"" + DefaultInternalServerErrorMessage + "\"}"
 )
 
 type (
