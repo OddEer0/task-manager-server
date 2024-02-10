@@ -2,7 +2,7 @@ package appErrors
 
 import (
 	"errors"
-	"log/slog"
+	"github.com/sirupsen/logrus"
 	"net/http"
 
 	httpUtils "github.com/OddEer0/task-manager-server/pkg/http_utils"
@@ -22,7 +22,7 @@ func Middleware(handlerFunc AppHandlerFunc) http.HandlerFunc {
 	}
 }
 
-func LoggingMiddleware(logger *slog.Logger) func(handlerFunc AppHandlerFunc) http.HandlerFunc {
+func LoggingMiddleware(logger *logrus.Logger) func(handlerFunc AppHandlerFunc) http.HandlerFunc {
 	return func(handlerFunc AppHandlerFunc) http.HandlerFunc {
 		return func(res http.ResponseWriter, req *http.Request) {
 			err := handlerFunc(res, req)

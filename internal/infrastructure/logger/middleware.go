@@ -2,7 +2,7 @@ package logger
 
 import (
 	"bytes"
-	"log/slog"
+	"github.com/sirupsen/logrus"
 	"net/http"
 	"time"
 )
@@ -39,7 +39,7 @@ func (rw *responseWriter) WriteHeader(code int) {
 	return
 }
 
-func LoggingMiddleware(logger *slog.Logger) func(http.Handler) http.Handler {
+func LoggingMiddleware(logger *logrus.Logger) func(http.Handler) http.Handler {
 	return func(next http.Handler) http.Handler {
 		fn := func(w http.ResponseWriter, r *http.Request) {
 			start := time.Now()
@@ -48,7 +48,7 @@ func LoggingMiddleware(logger *slog.Logger) func(http.Handler) http.Handler {
 
 			if wrapped.status < 400 {
 				logger.Debug(
-					"debug", "status", wrapped.status,
+					"status", wrapped.status,
 					"method", r.Method,
 					"path", r.URL.EscapedPath(),
 					"duration", time.Since(start),
