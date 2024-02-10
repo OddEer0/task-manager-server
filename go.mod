@@ -1,6 +1,6 @@
 module github.com/OddEer0/task-manager-server
 
-go 1.21.5
+go 1.18
 
 require (
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
@@ -9,6 +9,7 @@ require (
 	github.com/google/uuid v1.5.0
 	github.com/joho/godotenv v1.5.1
 	github.com/samber/lo v1.39.0
+	github.com/sirupsen/logrus v1.9.3
 	github.com/stretchr/testify v1.8.4
 	golang.org/x/crypto v0.7.0
 )

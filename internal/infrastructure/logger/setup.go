@@ -1,8 +1,8 @@
 package logger
 
 import (
+	"github.com/sirupsen/logrus"
 	"io"
-	"log/slog"
 	"os"
 )
 
@@ -12,13 +12,13 @@ const (
 	EnvProd  = "prod"
 )
 
-var log *slog.Logger = nil
+var log *logrus.Logger = nil
 
-func NewLogger() *slog.Logger {
+func NewLogger() *logrus.Logger {
 	return log
 }
 
-func SetupLogger(env string) *slog.Logger {
+func SetupLogger(env string) *logrus.Logger {
 	if log != nil {
 		return log
 	}
@@ -27,19 +27,18 @@ func SetupLogger(env string) *slog.Logger {
 	case EnvLocal:
 		log = setupLocalLog(os.Stdout)
 	case EnvDev:
-		log = slog.New(
-			slog.NewJSONHandler(os.Stdout, &slog.HandlerOptions{Level: slog.LevelDebug}),
-		)
+		log = logrus.New()
 	case EnvProd:
-		log = slog.New(
-			slog.NewJSONHandler(os.Stdout, &slog.HandlerOptions{Level: slog.LevelInfo}),
-		)
+		log = logrus.New()
 	}
 
 	return log
 }
 
-func setupLocalLog(out io.Writer) *slog.Logger {
-	jsonHandler := slog.NewJSONHandler(out, &slog.HandlerOptions{Level: slog.LevelDebug})
-	return slog.New(jsonHandler)
+func setupLocalLog(out io.Writer) *logrus.Logger {
+	logger := logrus.New()
+	logger.Level = logrus.DebugLevel
+	logger.SetFormatter(&logrus.JSONFormatter{})
+
+	return logger
 }
