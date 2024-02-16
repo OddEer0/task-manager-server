@@ -83,8 +83,16 @@ func (p projectHandler) CreateProject(res http.ResponseWriter, req *http.Request
 }
 
 func (p projectHandler) UpdateProject(res http.ResponseWriter, req *http.Request) error {
-	//TODO implement me
-	panic("implement me")
+	var body models.Project
+	err := httpUtils.BodyJson(req, &body)
+	if err != nil {
+		return appErrors.BadRequest("", err.Error())
+	}
+	defer func() {
+		_ = req.Body.Close()
+	}()
+
+	return nil
 }
 
 func (p projectHandler) DeleteProject(res http.ResponseWriter, req *http.Request) error {

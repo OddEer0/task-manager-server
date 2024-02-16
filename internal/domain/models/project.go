@@ -7,5 +7,5 @@ type Project struct {
 	Bg          string  `json:"bg" validate:"required"`
 	Color       string  `json:"color" validate:"required"`
 	Order       int     `json:"order" validate:"required"`
-	UserId      string  `json:"projectId" validate:"required,uuidv4"`
+	UserId      string  `json:"userId" validate:"required,uuidv4"`
 }
