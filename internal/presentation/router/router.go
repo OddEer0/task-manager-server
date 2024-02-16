@@ -1,8 +1,6 @@
 package router
 
 import (
-	"net/http"
-
 	appErrors "github.com/OddEer0/task-manager-server/internal/common/lib/app_errors"
 	"github.com/OddEer0/task-manager-server/internal/infrastructure/logger"
 	"github.com/OddEer0/task-manager-server/internal/presentation/handlers"
@@ -23,10 +21,8 @@ func AppRouter(router *chi.Mux) {
 
 		router.Route("/", func(router chi.Router) {
 			router.Use(customMiddleware.AuthMiddleware)
-			router.Get("/hello", middleware(func(res http.ResponseWriter, req *http.Request) error {
-				res.Write([]byte("Hello auth!"))
-				return nil
-			}))
+			router.Get("/projects/{id}", middleware(appHandler.ProjectHandler.GetProjectsById))
+			router.Post("/projects", middleware(appHandler.ProjectHandler.CreateProject))
 		})
 	})
 }

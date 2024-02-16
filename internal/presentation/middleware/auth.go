@@ -30,7 +30,7 @@ func AuthMiddleware(next http.Handler) http.Handler {
 			unauthorized(res)
 			return
 		}
-		ctx := context.WithValue(req.Context(), "user", token.Claims.(*tokenService.CustomClaims).JwtUserData)
+		ctx := context.WithValue(req.Context(), "user", &token.Claims.(*tokenService.CustomClaims).JwtUserData)
 		req = req.WithContext(ctx)
 		next.ServeHTTP(res, req)
 	})
